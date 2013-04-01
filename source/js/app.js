@@ -1,6 +1,6 @@
 $(function() {
 
-  alert('test');
+  alert('awesome!!');
 
   RBN.App = (function() {
       return new (Fiber.extend(function() {
