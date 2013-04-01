@@ -3,7 +3,7 @@
 
   "name": "RBN",
   "description": "Keep up with all your review board items",
-  "version": "1.1",
+  "version": "1.0",
 
   "permissions": [
     "https://rb.corp.linkedin.com/api/",
@@ -18,9 +18,7 @@
   },
 
   "background": {
-    "scripts": ["js/lib/jquery-1.8.2.min.js", "js/lib/underscore.min.js", "js/setup.js", "js/notification.js"],
+    "scripts": ["js/lib/jquery-1.8.2.min.js", "js/lib/underscore.min.js", "js/setup.js", "js/dal.js", "js/notifier.js"],
     "persistent": true
-  },
-
-  "update_url": "https://raw.github.com/krisk/rbn/master/updates.xml"
+  }
 }

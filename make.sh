@@ -1,3 +1,5 @@
+#!/bin/sh
+
 rm -rf package
 /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --pack-extension=source
 mkdir package

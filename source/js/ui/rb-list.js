@@ -1,6 +1,6 @@
 $(function() {
 
-  RBN.UI.RBTableViewController = RBN.UI.TableViewController.extend(function (base) {
+  RBN.UI.RBList = RBN.UI.List.extend(function (base) {
 
     var options = {
       template: _.template($('#list-item-template').html()),
@@ -25,7 +25,7 @@ $(function() {
 
         this.bindEvents();
 
-        RBN.UI.setBadgeCount('');
+        chrome.browserAction.setBadgeText({text: ''});
       },
       bindEvents: function() {
         this.$searchInput.on('keyup', _.debounce(_.bind(this.onSearchKeyUp, this), 100));

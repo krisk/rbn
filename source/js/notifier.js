@@ -1,8 +1,8 @@
 $(function() {
 
-  var Notifications = {};
+  var Notifier = {};
 
-  Notifications.pollForNewRBs = (function() {
+  Notifier.pollForNewRBs = (function() {
     var previousIds = null;
 
     return function() {
@@ -21,20 +21,20 @@ $(function() {
                 var notification = webkitNotifications.createNotification('icon.png', 'New RB', newIds.length);
                 notification.show();
 
-                RBN.UI.setBadgeCount(newIds.length);
+                chrome.browserAction.setBadgeText({text: newIds.length});
               }
             }
 
             previousIds = ids;
 
           })
-          .done(Notifications.pollForNewRBs);
+          .done(Notifier.pollForNewRBs);
 
       }, RBN.Settings.pollInterval);
     }
 
   })();
 
-  Notifications.pollForNewRBs();
+  Notifier.pollForNewRBs();
 
 });

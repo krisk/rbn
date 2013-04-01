@@ -1,12 +1,10 @@
 $(function() {
 
-  alert('TESTING!');
-
   RBN.App = (function() {
       return new (Fiber.extend(function() {
         return {
           init: function() {
-            this.list = new RBN.UI.RBTableViewController();
+            this.list = new RBN.UI.RBList();
           }
         }
       }));

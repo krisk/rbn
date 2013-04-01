@@ -1,6 +1,6 @@
 $(function () {
 
-  RBN.UI.TableViewController = Fiber.extend(function () {
+  RBN.UI.List = Fiber.extend(function () {
     var defaultSettings = {
       maxItems: 5
     };
