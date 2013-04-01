@@ -1,7 +1,5 @@
 $(function() {
 
-  alert('test update 2');
-
   RBN.App = (function() {
       return new (Fiber.extend(function() {
         return {
