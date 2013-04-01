@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>RBN - Review Board Notifier</title>
+  <script src="js/lib/jquery-1.8.2.min.js"></script>
+  <script src="js/lib/fuse.min.js"></script>
+  <script src="js/lib/fiber.min.js"></script>
+  <script src="js/lib/underscore.min.js"></script>
+  <script src="js/utils/mixins.js"></script>
+
+  <script src="js/setup.js"></script>
+  <script src="js/controllers/TableViewController.js"></script>
+  <script src="js/controllers/RBTableViewController.js"></script>
+
+  <script src="js/app.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<section>
+  <header>
+    <input type="text" id="search" placeholder="Search summary, submitter...">
+    <button id="refresh-btn">refresh</button>
+  </header>
+  <ul id="items" class="review-list">
+  </ul>
+  <ul id="search-items" class="review-list">
+  </ul>
+  <footer>
+  </footer>
+</section>
+
+<script id="list-item-template" type="text/html">
+  <li id="review-<%= id %>" data-item-id="<%= id %>">
+    <span class="summary"><%= summary %></span>
+    <span class="submitter"><%= submitter %></span>
+  </li>
+</script>
+
+</body>
+</html>

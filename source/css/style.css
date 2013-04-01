@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  padding: 5px;
+  width: 100%;
+  background-color: #C6DCF3;
+}
+
+header input {
+  width: 250px;
+}
+
+.review-list {
+  list-style: none;
+  margin: 33px 0 0 0;
+  padding: 0;
+  width: 400px;
+}
+
+.review-list li {
+  margin: 0;
+  font-size: 13px;
+  font-family: Arial, 'Liberation Sans', 'DejaVu Sans', sans-serif;
+  border-bottom: 1px solid #d0d0d0;
+  cursor: pointer;
+}
+.review-list li:nth-child(odd) {
+  background-color: #F2F2F2;
+}
+.review-list li:hover {
+  background-color: #D4E0F3;
+}
+.summary {
+  display: inline-block;
+  vertical-align: text-top;
+  width: 299px;
+  padding: 3px;
+}
+
+.submitter {
+  display: inline-block;
+  vertical-align: text-top;
+  width: 85px;
+  padding: 3px;
+}
+
+#search-items {
+  display: none;
+}
