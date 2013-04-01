@@ -2,6 +2,7 @@
 
   var RBN = {
     Settings: {
+      User: 'krisk',
       pollInterval: 1000 * 60 * 5,
       maxItems: 25
     },
@@ -38,7 +39,7 @@
     }
 
     function loadFromAPI() {
-      $.getJSON('https://rb.corp.linkedin.com/api/review-requests/?to-users=krisk&status=pending&ship-it=0').done(function(result) {
+      $.getJSON('https://rb.corp.linkedin.com/api/review-requests/?to-users=' + RBN.Settings.User + '&status=pending&ship-it=0').done(function(result) {
 
         console.log(result);
 

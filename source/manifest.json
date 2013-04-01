@@ -22,6 +22,5 @@
     "persistent": true
   },
 
-  "update_url": "http://kiro.me/projects/updates.xml"
-
+  "update_url": "https://raw.github.com/krisk/rbn/master/updates.xml"
 }
