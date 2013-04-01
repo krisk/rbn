@@ -21,7 +21,7 @@ $(function() {
                 var notification = webkitNotifications.createNotification('icon.png', 'New RB', newIds.length);
                 notification.show();
 
-                chrome.browserAction.setBadgeText({text: newIds.length});
+                chrome.browserAction.setBadgeText({text: "" + newIds.length});
               }
             }
 
