@@ -11,6 +11,8 @@
     UI: {}
   };
 
+  alert('TESTING!');
+
   RBN.UI.setBadgeCount = function(count) {
     chrome.browserAction.setBadgeText({text: count});
   }
