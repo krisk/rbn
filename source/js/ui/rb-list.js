@@ -19,12 +19,21 @@ $(function() {
         this.$target = $('#items');
         this.$searchTarget = $('#search-items');
         this.$searchInput = $('#search');
-        this.$refreshButtton = $('#refresh-btn')
+        this.$refreshButtton = $('#refresh-btn');
+        this.$spinner = $('#spinner');
 
         this.pollTimer = null;
 
+        if (this.items.length === 0) {
+          this.$spinner.addClass('spin');
+        }
+
         // Load data, and start polling
-        this.loadData().done(_.bind(this.startPolling, this));
+        this.loadData()
+          .done(_.bind(function() {
+            this.$spinner.removeClass('spin');
+          }, this))
+          .done(_.bind(this.startPolling, this));
 
         this.bindEvents();
 

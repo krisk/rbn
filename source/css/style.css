@@ -5,6 +5,7 @@ body {
 
 section {
   padding: 20px 0 20px 0;
+  min-height: 80px;
 }
 
 header {
