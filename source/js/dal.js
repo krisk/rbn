@@ -18,6 +18,16 @@
     }
   })();
 
+  RBN.DAL.canShowNotifications = function() {
+    var state = window.localStorage['review_boards_allow_notification'];
+    // Treat `undefined` as true
+    return (state === undefined) ? true : !!parseInt(state);
+  };
+
+  RBN.DAL.setCanShowNotifications = function(value) {
+    window.localStorage['review_boards_allow_notification'] = value ? 1 : 0;
+  };
+
   RBN.DAL.getAllRBs = function(refresh) {
     RBN.DAL.getCurrentUser();
 

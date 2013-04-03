@@ -1,15 +1,32 @@
 $(function() {
 
+  var stopped = false,
+    interval = RBN.Settings.pollInterval;
+
   var Notifier = {};
 
-  Notifier.pollForNewRBs = (function() {
-    var previousIds = null;
+  Notifier.start = function() {
+    var interval = RBN.Settings.pollInterval,
+      previousIds = null;
 
-    return function() {
-      setTimeout(function() {
+    stopped = false;
+
+    function poll() {
+
+      pollTimer = setTimeout(function() {
+
+        if (stopped) {
+          clearTimeout(pollTimer);
+          pollTimer = null;
+          return;
+        }
 
         RBN.DAL.getAllRBs()
           .done(function(items) {
+
+            if (stopped) {
+              return;
+            }
 
             var ids = _.map(items, function(item) {
               return item.id;
@@ -18,9 +35,10 @@ $(function() {
             if (previousIds) {
               var newIds = _.difference(ids, previousIds);
               if (newIds.length > 0) {
-                var notification = webkitNotifications.createNotification('icon.png', 'New RB', newIds.length);
-                notification.show();
-
+                if (RBN.DAL.canShowNotifications()) {
+                  var notification = webkitNotifications.createNotification('icon.png', 'New RB', newIds.length);
+                  notification.show();
+                }
                 chrome.browserAction.setBadgeText({text: "" + newIds.length});
               }
             }
@@ -28,13 +46,19 @@ $(function() {
             previousIds = ids;
 
           })
-          .done(Notifier.pollForNewRBs);
+          .done(poll);
 
-      }, RBN.Settings.pollInterval);
+      }, interval);
     }
 
-  })();
+    poll();
+  }
 
-  Notifier.pollForNewRBs();
+  Notifier.stop = function() {
+    stopped = true;
+  };
 
+  Notifier.start();
+
+  window.Notifier = Notifier;
 });
