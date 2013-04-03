@@ -26,9 +26,8 @@
     function loadFromCache() {
       var expiry,
         items = window.localStorage['review_boards'];
-
       if (items) {
-        expiry = window.localStorage['review_boards_expiry']
+        expiry = window.localStorage['review_boards_expiry'];
         items = JSON.parse(items);
         if (expiry < (new Date()).getTime()) {
           items = null;
@@ -45,9 +44,8 @@
 
     function loadFromAPI() {
       RBN.DAL.getCurrentUser().done(function(user) {
-        $.getJSON(RBN.Settings.apiUrl + '/review-requests/?to-users=' + user + '&status=pending&ship-it=0').done(function(result) {
 
-          console.log(result);
+        $.getJSON(RBN.Settings.apiUrl + '/review-requests/?to-users=' + user + '&status=pending&ship-it=0').done(function(result) {
 
           var items = _.map(result.review_requests, function(item) {
             return {

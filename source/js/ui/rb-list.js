@@ -6,12 +6,15 @@ $(function() {
       template: _.template($('#list-item-template').html()),
     };
 
+    var GHOST_PERSON_IMG = 'ghost_person.png';
+
     return {
       init: function () {
         base.init.call(this, {maxItems: RBN.Settings.maxItems});
 
         this.fuse = null;
         this.itemsIds = [];
+        this.badImageMap = {};
 
         this.$target = $('#items');
         this.$searchTarget = $('#search-items');
@@ -139,6 +142,31 @@ $(function() {
         var data = this.itemAtIndex(sectionIndex, itemIndex);
         return options.template(data);
       },
+      computeImages: function() {
+        var self = this;
+        var $target;
+
+        if (this.isSearchVisible()) {
+          $target = this.$searchTarget;
+        } else {
+          $target = this.$target;
+        }
+
+        $target.find('img').each(function() {
+          var $img = $(this),
+            id = $img.closest('li').data('item-id'),
+            src = $img.attr('src');
+
+          if (self.badImageMap[id]) {
+            $img.attr('src', GHOST_PERSON_IMG)
+          } else {
+            $img.error(function() {
+              $img.attr('src', GHOST_PERSON_IMG);
+              self.badImageMap[id] = true;
+            });
+          }
+        });
+      },
       render: function() {
         var output = base.render.call(this);
 
@@ -147,6 +175,8 @@ $(function() {
         } else {
           this.$target.append(output);
         }
+
+        this.computeImages();
       }
     }
   });

@@ -7,6 +7,7 @@
   <script src="js/lib/fuse.min.js"></script>
   <script src="js/lib/fiber.min.js"></script>
   <script src="js/lib/underscore.min.js"></script>
+  <script src="js/lib/date.js"></script>
   <script src="js/utils/mixins.js"></script>
 
   <script src="js/setup.js"></script>
@@ -35,9 +36,15 @@
 </section>
 
 <script id="list-item-template" type="text/html">
-  <li id="review-<%= id %>" data-item-id="<%= id %>">
-    <span class="summary"><%= summary %></span>
-    <span class="submitter"><%= submitter %></span>
+  <li data-item-id="<%= id %>">
+    <div class="body">
+      <img src="http://cinco.corp.linkedin.com/images/users/thumbnail/<%= submitter %>.jpg"></img>
+      <div class="content">
+        <span class="submitter"><%= submitter %></span>
+        <p class="summary"><%= summary %></p>
+        <span class="updated"><%= prettyDate(last_updated) %></span>
+      </div>
+    </div>
   </li>
 </script>
 
