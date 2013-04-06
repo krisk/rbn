@@ -4,20 +4,24 @@ $(function() {
       return new (Fiber.extend(function() {
         return {
           init: function() {
+            this.header = new RBN.UI.Header();
             this.list = new RBN.UI.RBList();
-
-            this.$notifictionsCheckbox = $('#notifications-chbx');
-            this.$notifictionsCheckbox.prop('checked', RBN.DAL.canShowNotifications());
 
             this.bindEvents();
           },
           bindEvents: function() {
-            this.$notifictionsCheckbox.on('change', _.bind(this.onNotificationPermissionChange, this));
+            this.header.on('search', _.bind(this.onSearch, this));
+            this.header.on('refresh', _.bind(this.onRefresh, this));
           },
-          onNotificationPermissionChange: function() {
-            var allow = this.$notifictionsCheckbox.prop('checked');
-            RBN.DAL.setCanShowNotifications(allow);
-          }
+          onSearch: function(event, args) {
+            this.list.search(args);
+          },
+          onRefresh: function() {
+            this.list.loadData(true)
+              .done(_.bind(function() {
+                this.header.afterRefresh();
+              }, this));
+          },
         }
       }));
   })();

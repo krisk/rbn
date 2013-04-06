@@ -1,12 +1,10 @@
 $(function() {
 
-  var stopped = false,
-    interval = RBN.Settings.pollInterval;
-
+  var stopped = false;
   var Notifier = {};
 
   Notifier.start = function() {
-    var interval = RBN.Settings.pollInterval,
+    var interval = RBN.Settings.get().pollInterval,
       previousIds = null;
 
     stopped = false;
@@ -35,7 +33,7 @@ $(function() {
             if (previousIds) {
               var newIds = _.difference(ids, previousIds);
               if (newIds.length > 0) {
-                if (RBN.DAL.canShowNotifications()) {
+                if (RBN.Settings.get().showNotifications) {
                   var notification = webkitNotifications.createNotification('icon.png', 'New RB', newIds.length);
                   notification.show();
                 }

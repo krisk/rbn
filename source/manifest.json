@@ -18,7 +18,7 @@
   },
 
   "background": {
-    "scripts": ["js/lib/jquery-1.8.2.min.js", "js/lib/underscore.min.js", "js/setup.js", "js/dal.js", "js/notifier.js"],
+    "scripts": ["js/lib/jquery-1.8.2.min.js", "js/lib/underscore.min.js", "js/setup.js", "js/dal.js", "js/settings.js", "js/notifier.js"],
     "persistent": true
   }
 }

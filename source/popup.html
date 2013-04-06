@@ -12,21 +12,34 @@
 
   <script src="js/setup.js"></script>
   <script src="js/dal.js"></script>
+  <script src="js/settings.js"></script>
+
   <script src="js/ui/list.js"></script>
   <script src="js/ui/rb-list.js"></script>
+  <script src="js/ui/header.js"></script>
 
   <script src="js/app.js"></script>
 
+  <link type="text/css" rel="stylesheet" href="css/header.css">
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/spinner.css">
 </head>
 
 <body>
 
-<section>
+<section class="list">
   <header>
-    <input type="text" id="search" placeholder="Search summary, submitter...">
-    <button id="refresh-btn">refresh</button>
+    <section class="search">
+      <input type="text" id="search" placeholder="Search summary, submitter...">
+      <button id="refresh-btn">refresh</button>
+      <img id="settings-btn" src="settings-icon.png" title="Settings"/>
+    </section>
+    <section class="settings">
+      <div class="settings-content">
+        <input type="checkbox" id="notifications-chbx"/>
+        <label for="notifications-chbx" title="Show notification">Notifications</label>
+      </div>
+    </section>
   </header>
 
   <div id="spinner" class="spinner">
@@ -48,11 +61,6 @@
   </ul>
   <ul id="search-items" class="review-list">
   </ul>
-  <footer>
-    <input type="checkbox" id="notifications-chbx"/>
-    <label for="notifications-chbx" title="Show notification">Notifications<label>
-  </footer>
-  </footer>
 </section>
 
 <script id="list-item-template" type="text/html">

@@ -10,7 +10,7 @@ $(function() {
 
     return {
       init: function () {
-        base.init.call(this, {maxItems: RBN.Settings.maxItems});
+        base.init.call(this, {maxItems: RBN.Settings.get().maxItems});
 
         this.fuse = null;
         this.itemsIds = [];
@@ -18,8 +18,7 @@ $(function() {
 
         this.$target = $('#items');
         this.$searchTarget = $('#search-items');
-        this.$searchInput = $('#search');
-        this.$refreshButtton = $('#refresh-btn');
+
         this.$spinner = $('#spinner');
 
         this.pollTimer = null;
@@ -40,38 +39,17 @@ $(function() {
         chrome.browserAction.setBadgeText({text: ''});
       },
       bindEvents: function() {
-        this.$searchInput.on('keyup', _.debounce(_.bind(this.onSearchKeyUp, this), 100));
-
         var bound = _.bind(this.onItemClick, this);
         this.$target.on('click', 'li', bound);
         this.$searchTarget.on('click', 'li', bound);
-
-        this.$refreshButtton.on('click', _.bind(this.onRefreshClicked, this));
       },
       onItemClick: function(event) {
         var $target = $(event.target).closest('li');
         var attrId = $target.data('item-id');
         chrome.tabs.create({url: 'https://rb.corp.linkedin.com/r/' + attrId});
       },
-      onSearchKeyUp: function() {
-        var searchText = this.$searchInput.val();
-        this.displaySearch(searchText);
-      },
-      onRefreshClicked: function() {
-        this.clearSearch();
 
-        var $btn = this.$refreshButtton.attr('disabled', 'disabled');
-
-        this.loadData(true)
-          .done(function() {
-            $btn.removeAttr('disabled');
-          });
-      },
-      clearSearch: function() {
-        this.displaySearch('');
-        this.$searchInput.val('');
-      },
-      displaySearch: function(text) {
+      search: function(text) {
         this.searchItems = this.fuse.search(text);
 
         this.resetSearch();
@@ -90,6 +68,7 @@ $(function() {
         this.render();
         this.$target.hide();
       },
+
       numberOfSections: function () {
         if (this.isSearchVisible()) {
           return 1;
@@ -141,7 +120,7 @@ $(function() {
             .done(_.bind(this.startPolling, this));
         }, this);
 
-        this.pollTimer = setTimeout(bound, RBN.Settings.pollInterval);
+        this.pollTimer = setTimeout(bound, RBN.Settings.get().pollInterval);
       },
       stopPolling: function() {
         clearTimeout(this.pollTimer);

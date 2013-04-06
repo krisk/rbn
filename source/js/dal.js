@@ -9,7 +9,7 @@
         dfd.resolve(user);
       }
 
-      $.getJSON(RBN.Settings.apiUrl + '/session').done(function(result) {
+      $.getJSON(RBN.Settings.get().apiUrl + '/session').done(function(result) {
         user = result.session.links.user.title;
         dfd.resolve(user);
       });
@@ -18,14 +18,13 @@
     }
   })();
 
-  RBN.DAL.canShowNotifications = function() {
-    var state = window.localStorage['review_boards_allow_notification'];
-    // Treat `undefined` as true
-    return (state === undefined) ? true : !!parseInt(state);
+  RBN.DAL.getSettings = function() {
+    var settings = window.localStorage['review_boards_settings'];
+    return settings && JSON.parse(settings);
   };
 
-  RBN.DAL.setCanShowNotifications = function(value) {
-    window.localStorage['review_boards_allow_notification'] = value ? 1 : 0;
+  RBN.DAL.saveSettings = function(settings) {
+    window.localStorage['review_boards_settings'] = JSON.stringify(settings);
   };
 
   RBN.DAL.getAllRBs = function(refresh) {
@@ -55,7 +54,7 @@
     function loadFromAPI() {
       RBN.DAL.getCurrentUser().done(function(user) {
 
-        $.getJSON(RBN.Settings.apiUrl + '/review-requests/?to-users=' + user + '&status=pending&ship-it=0').done(function(result) {
+        $.getJSON(RBN.Settings.get().apiUrl + '/review-requests/?to-users=' + user + '&status=pending&ship-it=0').done(function(result) {
 
           var items = _.map(result.review_requests, function(item) {
             return {
@@ -70,7 +69,7 @@
           });
 
           window.localStorage['review_boards'] = JSON.stringify(items);
-          window.localStorage['review_boards_expiry'] =  (new Date()).getTime() + (1000 * 60 * 5);
+          window.localStorage['review_boards_expiry'] =  (new Date()).getTime() + RBN.Settings.get().pollInterval;
 
           dfd.resolve(items);
         });
