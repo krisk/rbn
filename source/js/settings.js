@@ -1,9 +1,15 @@
-$(function () {
+/*!
+ * RBN
+ * Copyright 2012 Kirollos Risk <kirollos@gmail.com>
+ * Released under the MIT license
+ */
+(function () {
 
   var Settings = Fiber.extend(function() {
 
     var defaultSettings = {
       apiUrl: 'https://rb.corp.linkedin.com/api',
+      reviewUrl: 'https://rb.corp.linkedin.com/r/{0}',
       pollInterval: 1000 * 60 * 5,
       maxItems: 25,
       showNotifications: true
@@ -41,7 +47,7 @@ $(function () {
         return this.settings;
       },
       save: function() {
-        RBN.DAL.saveSettings(this.settings);
+        RBN.DAL.saveSettings(this.get());
       }
     }
   });
@@ -50,4 +56,4 @@ $(function () {
 
   RBN.Settings = new Settings();
 
-});
+})();

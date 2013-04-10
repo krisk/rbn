@@ -1,3 +1,8 @@
+/*!
+ * RBN
+ * Copyright 2012 Kirollos Risk <kirollos@gmail.com>
+ * Released under the MIT license
+ */
 (function() {
   RBN.DAL.getCurrentUser = (function() {
     var user;
@@ -54,7 +59,7 @@
     function loadFromAPI() {
       RBN.DAL.getCurrentUser().done(function(user) {
 
-        $.getJSON(RBN.Settings.get().apiUrl + '/review-requests/?to-users=' + user + '&status=pending&ship-it=0').done(function(result) {
+        $.getJSON(String.format('{0}/review-requests/?to-users={1}&status=pending&ship-it=0', RBN.Settings.get().apiUrl, user)).done(function(result) {
 
           var items = _.map(result.review_requests, function(item) {
             return {

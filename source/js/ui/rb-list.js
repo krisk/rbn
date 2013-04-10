@@ -1,3 +1,8 @@
+/*!
+ * RBN
+ * Copyright 2012 Kirollos Risk <kirollos@gmail.com>
+ * Released under the MIT license
+ */
 $(function() {
 
   RBN.UI.RBList = RBN.UI.List.extend(function (base) {
@@ -46,7 +51,7 @@ $(function() {
       onItemClick: function(event) {
         var $target = $(event.target).closest('li');
         var attrId = $target.data('item-id');
-        chrome.tabs.create({url: 'https://rb.corp.linkedin.com/r/' + attrId});
+        chrome.tabs.create({url: String.format(RBN.Settings.get().reviewUrl, attrId)});
       },
 
       search: function(text) {

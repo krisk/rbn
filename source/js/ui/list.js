@@ -1,3 +1,8 @@
+/*!
+ * RBN
+ * Copyright 2012 Kirollos Risk <kirollos@gmail.com>
+ * Released under the MIT license
+ */
 $(function () {
 
   RBN.UI.List = Fiber.extend(function () {

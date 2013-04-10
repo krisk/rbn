@@ -1,0 +1,9 @@
+{
+  "name": "RBN",
+  "description": "Review Board Notifier",
+  "author": "Kiro Risk <kirollos@gmail.com>",
+  "dependencies": {
+    "uglify-js": "*",
+    "colors": "*"
+  }
+}
