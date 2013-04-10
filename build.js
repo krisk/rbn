@@ -44,7 +44,6 @@
     }
   };
 
-
   var Build = {
     init: function() {
       Build.setup();
@@ -116,12 +115,12 @@
 
       var exec = require('child_process').exec;
       exec('./make.sh -o ' + OUTPUT_DIR, function() {
-        //Utils.rmDir(OUTPUT_DIR);
+        Utils.rmDir(OUTPUT_DIR);
         console.log('Done!'.green);
       });
     }
   }
 
-  build();
+  Build.init();
 
 })();
