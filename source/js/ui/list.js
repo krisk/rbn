@@ -1,6 +1,6 @@
 /*!
  * RBN
- * Copyright 2012 Kirollos Risk <kirollos@gmail.com>
+ * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
 $(function () {

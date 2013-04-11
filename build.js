@@ -6,7 +6,7 @@
 
   var FILE_ENCODING = 'utf-8',
     EOL = '\n',
-    OUTPUT_DIR = 'output';
+    OUTPUT_DIR = config.OUTPUT_DIR;
 
   var Utils = {
     rmDir: function(dirPath) {
@@ -91,7 +91,7 @@
     changeManifest: function() {
       console.log('Updating manifest'.grey);
 
-      var manifest = fs.readFileSync('./source/manifest.json', FILE_ENCODING);
+      var manifest = fs.readFileSync(config.manifest, FILE_ENCODING);
       var json  = JSON.parse(manifest);
       json.background.scripts = [config.background.output];
       fs.writeFileSync(OUTPUT_DIR + '/manifest.json', JSON.stringify(json), FILE_ENCODING);
@@ -99,7 +99,7 @@
     updateHtml: function() {
       console.log('Updating HTML'.grey);
 
-      var file = fs.readFileSync('./source/popup.html', FILE_ENCODING);
+      var file = fs.readFileSync(config.popup, FILE_ENCODING);
 
       file = file.replace(/<script[^>]*>[^<]*<\/script>/g, '');
       file = file.replace('<!--[SCRIPTS]-->', '<script src="' + config.html.output + '"></script>');

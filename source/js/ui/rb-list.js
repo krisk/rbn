@@ -1,6 +1,6 @@
 /*!
  * RBN
- * Copyright 2012 Kirollos Risk <kirollos@gmail.com>
+ * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
 $(function() {
@@ -14,17 +14,19 @@ $(function() {
     var GHOST_PERSON_IMG = 'ghost_person.png';
 
     return {
-      init: function () {
-        base.init.call(this, {maxItems: RBN.Settings.get().maxItems});
+      init: function ($el) {
+        base.init.call(this, {
+          maxItems: RBN.Settings.get().maxItems
+        });
 
+        this.$el = $el;
         this.fuse = null;
         this.itemsIds = [];
         this.badImageMap = {};
 
-        this.$target = $('#items');
-        this.$searchTarget = $('#search-items');
-
-        this.$spinner = $('#spinner');
+        this.$target = this.$el.find('.review-list');
+        this.$searchTarget = this.$target.clone().appendTo($('.list')).hide();
+        this.$spinner = this.$el.find('.spinner');
 
         this.pollTimer = null;
 

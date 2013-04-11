@@ -1,6 +1,6 @@
 /*!
  * RBN
- * Copyright 2012 Kirollos Risk <kirollos@gmail.com>
+ * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
 $(function() {
@@ -9,8 +9,8 @@ $(function() {
       return new (Fiber.extend(function() {
         return {
           init: function() {
-            this.header = new RBN.UI.Header();
-            this.list = new RBN.UI.RBList();
+            this.header = new RBN.UI.Header($('header'));
+            this.list = new RBN.UI.RBList($('.list'));
 
             this.bindEvents();
           },

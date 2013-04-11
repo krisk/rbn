@@ -1,5 +1,6 @@
 (function () {
   var config = {
+    OUTPUT_DIR: 'output',
     background: {
       files: [
         './source/js/lib/string-format.js',
@@ -46,7 +47,9 @@
       './source/icon.png',
       './source/ghost_person.png',
       './source/Settings-icon.png'
-    ]
+    ],
+    manifest: './source/manifest.json',
+    popup: './source/popup.html'
   };
 
   module.exports = config;

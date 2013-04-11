@@ -1,14 +1,14 @@
 /*!
  * RBN
- * Copyright 2012 Kirollos Risk <kirollos@gmail.com>
+ * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
 $(function() {
 
   RBN.UI.Header = Fiber.extend(function() {
     return {
-      init: function() {
-        this.$el = $('header');
+      init: function($el) {
+        this.$el = $el;
         this.$settingsButton = this.$el.find('#settings-btn');
         this.$settings = this.$el.find('.settings');
         this.$refreshButtton = $('#refresh-btn');
