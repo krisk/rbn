@@ -6,13 +6,13 @@
 $(function () {
 
   RBN.UI.List = Fiber.extend(function () {
-    var defaultSettings = {
+    var defaultOptions = {
       maxItems: 5
     };
 
     return {
-      init: function (settings) {
-        this.settings = _.defaults(settings || {}, defaultSettings);
+      init: function (options) {
+        this.options = _.defaults(options || {}, defaultOptions);
 
         var lastItemIndex = lastSectionIndex = null;
         var search_lastItemIndex = search_lastSectionIndex = null;
@@ -133,7 +133,7 @@ $(function () {
         //console.log(startSectionIndex, startItemIndex);
 
         // Iterate over every section
-        for (sectionIndex = startSectionIndex, sectionsLen = this.items.length; sectionIndex < sectionsLen && count < this.settings.maxItems; sectionIndex++) {
+        for (sectionIndex = startSectionIndex, sectionsLen = this.items.length; sectionIndex < sectionsLen && count < this.options.maxItems; sectionIndex++) {
 
           if (drawTitle) {
             title = this.viewForHeaderInSection(sectionIndex);
@@ -151,7 +151,7 @@ $(function () {
 
             count++;
 
-            if (count >= this.settings.maxItems) {
+            if (count >= this.options.maxItems) {
               this._lastSectionIndex = sectionIndex;
               this._lastItemIndex = itemIndex + 1;
               break;

@@ -10,7 +10,11 @@ $(function() {
         return {
           init: function() {
             this.header = new RBN.UI.Header($('header'));
-            this.list = new RBN.UI.RBList($('.list'));
+
+            this.list = new RBN.UI.RBList($('.list'), {
+              maxItems: RBN.Settings.get().maxItems,
+              template: _.template($('#list-item-template').html())
+            });
 
             this.bindEvents();
           },

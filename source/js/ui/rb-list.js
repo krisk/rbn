@@ -7,17 +7,16 @@ $(function() {
 
   RBN.UI.RBList = RBN.UI.List.extend(function (base) {
 
-    var options = {
-      template: _.template($('#list-item-template').html()),
+    var defaultOptions = {
+      template: null
     };
 
     var GHOST_PERSON_IMG = 'ghost_person.png';
 
     return {
-      init: function ($el) {
-        base.init.call(this, {
-          maxItems: RBN.Settings.get().maxItems
-        });
+      init: function($el, options) {
+        options = _.defaults({}, options, defaultOptions);
+        base.init.call(this, options);
 
         this.$el = $el;
         this.fuse = null;
@@ -135,7 +134,7 @@ $(function() {
       },
       cellForRowAtIndex: function (sectionIndex, itemIndex) {
         var data = this.itemAtIndex(sectionIndex, itemIndex);
-        return options.template(data);
+        return this.options.template(data);
       },
       computeImages: function() {
         var self = this;
