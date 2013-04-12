@@ -8,7 +8,8 @@ $(function() {
   RBN.UI.RBList = RBN.UI.List.extend(function (base) {
 
     var defaultOptions = {
-      template: null
+      template: null,
+      pollInterval: 1000 * 60 * 5
     };
 
     var GHOST_PERSON_IMG = 'ghost_person.png';
@@ -52,7 +53,8 @@ $(function() {
       onItemClick: function(event) {
         var $target = $(event.target).closest('li');
         var attrId = $target.data('item-id');
-        chrome.tabs.create({url: String.format(RBN.Settings.get().reviewUrl, attrId)});
+
+        this.trigger('selected', { id: attrId });
       },
 
       search: function(text) {
@@ -126,7 +128,7 @@ $(function() {
             .done(_.bind(this.startPolling, this));
         }, this);
 
-        this.pollTimer = setTimeout(bound, RBN.Settings.get().pollInterval);
+        this.pollTimer = setTimeout(bound, this.options.pollInterval);
       },
       stopPolling: function() {
         clearTimeout(this.pollTimer);
@@ -175,4 +177,5 @@ $(function() {
     }
   });
 
+  Fiber.mixin(RBN.UI.RBList, Mixins.Event);
 });

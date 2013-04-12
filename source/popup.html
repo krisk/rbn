@@ -41,8 +41,28 @@
   </section>
   <section class="settings">
     <div class="settings-content">
-      <input type="checkbox" id="notifications-chbx"/>
-      <label for="notifications-chbx" title="Show notification">Notifications</label>
+      <fieldset>
+        <input type="checkbox" id="notifications-chbx"/>
+        <label for="notifications-chbx" title="Show notification">Display notifications</label>
+      </fieldset>
+      <fieldset>
+        <label for="max-num-items-text" title="Max number of RBs">Display a max of</label>
+        <input type="number" id="max-num-items-text" min="5" max="25">
+        <label for="max-num-items-text">RBs</label>
+      </fieldset>
+      <fieldset>
+        <label for="poll-interval-text" title="Poll internval">Poll every</label>
+        <input type="number" id="poll-interval-text" min="1" max="60">
+        <label for="poll-interval-text">minute(s)</label>
+      </fieldset>
+      <section class="information">
+        <p>
+          Issues? Feature requests?  Please use the <a href="https://github.com/krisk/rbn/issues">GitHub issue tracker</a>.
+        </p>
+        <p>
+          See the project on <a href="https://github.com/krisk/rbn/">GitHub</a>.
+        </p>
+      </section>
     </div>
   </section>
 </header>

@@ -56,3 +56,7 @@ body {
   color: grey;
   text-align: right;
 }
+
+.list.under {
+  opacity: 0.3;
+}

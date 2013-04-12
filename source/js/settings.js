@@ -6,24 +6,29 @@
 (function () {
 
   var Settings = Fiber.extend(function() {
+    var MINUTE = 1000 * 60;
 
     var defaultSettings = {
       apiUrl: 'https://rb.corp.linkedin.com/api',
       reviewUrl: 'https://rb.corp.linkedin.com/r/{0}',
       pollInterval: 1000 * 60 * 5,
+      minItems: 5,
       maxItems: 25,
-      showNotifications: true
+      showNotifications: true,
     };
 
     return {
       settings: null,
+      defaults: defaultSettings,
       init: function() {
-        var settings = this.get();
+        this.settings = _.defaults(RBN.DAL.getSettings() || {}, defaultSettings);
+
+        var settings = this.settings;
 
         // Create getter/setter properties for each setting.
         // By doing this, we can add a trigger and save function whenever
         // a setting is changed
-        _.each(defaultSettings, function(value, setting) {
+        _.each(settings, function(value, setting) {
           var prop = value,
             self = this;
 
@@ -33,7 +38,7 @@
             },
             set: function(val) {
               prop = val;
-              self.trigger('changed', {setting: setting, value: val});
+              self.trigger('change', { setting: setting, value: val});
               self.save();
             }
           });
@@ -41,9 +46,6 @@
         }, this);
       },
       get: function() {
-        if (!this.settings) {
-          this.settings = _.defaults(RBN.DAL.getSettings() || {}, defaultSettings);
-        }
         return this.settings;
       },
       save: function() {
