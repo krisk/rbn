@@ -4,6 +4,24 @@
  * Released under the MIT license
  */
 (function() {
+
+  var utils = {
+    getLastUpdatedFromISO8601: function() {
+        var FORMAT = 'YYYY-MM-DDTHH:mm:ss';
+
+        switch (RBN.Settings.get().lastUpdatedFrom) {
+          case '1':
+            return moment().startOf('day').format(FORMAT);
+          case '2':
+            return moment().subtract('days', 1).startOf('day').format(FORMAT);
+          case '3':
+            return moment().subtract('days', 7).startOf('day').format(FORMAT);
+          case '4':
+            return moment().subtract('days', 14).startOf('day').format(FORMAT);
+        }
+    }
+  };
+
   RBN.DAL.getCurrentUser = (function() {
     var user;
 
@@ -59,7 +77,13 @@
     function loadFromAPI() {
       RBN.DAL.getCurrentUser().done(function(user) {
 
-        $.getJSON(String.format('{0}/review-requests/?to-users={1}&status=pending&ship-it=0', RBN.Settings.get().apiUrl, user)).done(function(result) {
+        var url = String.format(
+          '{0}/review-requests/?to-users={1}&status=pending&ship-it=0&last-updated-from={2}',
+          RBN.Settings.get().apiUrl,
+          user,
+          utils.getLastUpdatedFromISO8601());
+
+        $.getJSON(url).done(function(result) {
 
           var items = _.map(result.review_requests, function(item) {
             return {

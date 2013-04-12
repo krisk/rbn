@@ -17,11 +17,11 @@
     },
     html: {
       files: [
+        './source/js/migration.js',
         './source/js/lib/string-format.js',
         './source/js/lib/jquery-1.8.2.js',
         './source/js/lib/underscore.js',
         './source/js/lib/moment.js',
-        './source/js/lib/pretty-date.js',
         './source/js/lib/fuse.js',
         './source/js/lib/fiber.js',
         './source/js/utils/mixins.js',

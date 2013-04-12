@@ -15,6 +15,7 @@
       minItems: 5,
       maxItems: 25,
       showNotifications: true,
+      lastUpdatedFrom: 4
     };
 
     return {

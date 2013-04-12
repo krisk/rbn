@@ -21,6 +21,7 @@ $(function() {
         this.$notifictionsCheckbox = $('#notifications-chbx');
         this.$maxNumItemsText = $('#max-num-items-text');
         this.$pollIntervalText = $('#poll-interval-text');
+        this.$timeDropdown = $('#time-dropdown');
 
         this.fillValues();
         this.bindEvents();
@@ -34,11 +35,13 @@ $(function() {
         this.$notifictionsCheckbox.on('change', _.bind(this.onNotificationPermissionChange, this));
         this.$maxNumItemsText.on('change', _.bind(this.onMaxNumItemsChange, this));
         this.$pollIntervalText.on('change', _.bind(this.onPollIntervalChange, this));
+        this.$timeDropdown.on('change', _.bind(this.onTimeChange, this));
       },
       fillValues: function() {
         this.$notifictionsCheckbox.prop('checked', RBN.Settings.get().showNotifications);
         this.$maxNumItemsText.val(RBN.Settings.get().maxItems);
         this.$pollIntervalText.val(RBN.Settings.get().pollInterval / MINUTE);
+        this.$timeDropdown.val(RBN.Settings.get().lastUpdatedFrom);
       },
       onSettingsButtonClick: function() {
         if (this._isOpened) {
@@ -93,6 +96,9 @@ $(function() {
           return;
         }
         RBN.Settings.get().pollInterval = value * MINUTE;
+      },
+      onTimeChange: function() {
+        RBN.Settings.get().lastUpdatedFrom = this.$timeDropdown.val();
       }
     }
   });

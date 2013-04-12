@@ -68,6 +68,9 @@ $(function() {
                 this.list.options.pollInterval = args.value * MINUTE;
                 this.list.startPolling();
                 break;
+              case 'lastUpdatedFrom':
+                this.onRefresh();
+                break;
             }
           }
         }

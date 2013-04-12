@@ -5,11 +5,12 @@
   <title>RBN - Review Board Notifier</title>
 
   <!--[SCRIPTS]-->
+  <script src="js/migration.js"></script>
+
   <script src="js/lib/string-format.js"></script>
   <script src="js/lib/jquery-1.8.2.js"></script>
   <script src="js/lib/underscore.js"></script>
   <script src="js/lib/moment.js"></script>
-  <script src="js/lib/pretty-date.js"></script>
 
   <script src="js/lib/fuse.js"></script>
   <script src="js/lib/fiber.js"></script>
@@ -49,6 +50,13 @@
         <label for="max-num-items-text" title="Max number of RBs">Display a max of</label>
         <input type="number" id="max-num-items-text" min="5" max="25">
         <label for="max-num-items-text">RBs</label>
+        <label for="time-dropdown"> since</label>
+        <select id="time-dropdown">
+         <option value="1">today</option>
+         <option value="2">yesterday</option>
+         <option value="3">the last week</option>
+         <option value="4">the last 2 weeks</option>
+       </select>
       </fieldset>
       <fieldset>
         <label for="poll-interval-text" title="Poll internval">Poll every</label>
@@ -93,7 +101,7 @@
       <div class="content">
         <span class="submitter"><%= submitter %></span>
         <p class="summary"><%= summary %></p>
-        <span class="updated"><%= prettyDate(last_updated) %></span>
+        <span class="updated"><%= moment(last_updated).fromNow() %></span>
       </div>
     </div>
   </li>
