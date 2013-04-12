@@ -11,8 +11,7 @@ done
 
 echo $SOURCE
 
-rm -rf package
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --pack-extension=$SOURCE
-mkdir package
+rm -rf package/rbn.crx
+google-chrome --pack-extension=$SOURCE --pack-extension-key=package/rbn.pem
+mkdir -p package
 mv $SOURCE.crx package/rbn.crx
-mv $SOURCE.pem package/rbn.pem

@@ -10,7 +10,7 @@
     var defaultSettings = {
       apiUrl: 'https://rb.corp.linkedin.com/api',
       reviewUrl: 'https://rb.corp.linkedin.com/r/{0}',
-      pollInterval: 1000 * 60 * 5,
+      pollInterval: 1000 * 60,
       maxItems: 25,
       showNotifications: true
     };

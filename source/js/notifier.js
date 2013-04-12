@@ -31,15 +31,23 @@ $(function() {
               return;
             }
 
-            var ids = _.map(items, function(item) {
-              return item.id;
-            });
+            var itemMap = new Object;
+            for (x in items)
+            {
+                itemMap[items[x].id] = items[x];
+            }
+
+            var ids = Object.keys(itemMap);
 
             if (previousIds) {
-              var newIds = _.difference(ids, previousIds);
+              var newIds = _.difference(ids, previousIds); 
               if (newIds.length > 0) {
+                var firstUpdate = itemMap[newIds[0]];
                 if (RBN.Settings.get().showNotifications) {
-                  var notification = webkitNotifications.createNotification('icon.png', 'New RB', newIds.length);
+                    var onlyOne = newIds.length == 1;
+                    var description = onlyOne ? firstUpdate.description : "And " + newIds.length + " more.";
+                    var notification = webkitNotifications.createNotification("http://cinco.corp.linkedin.com/images/users/thumbnail/" + firstUpdate.submitter + ".jpg",
+                        firstUpdate.submitter + " - " + firstUpdate.summary, description);
                   notification.show();
                 }
                 chrome.browserAction.setBadgeText({text: "" + newIds.length});
