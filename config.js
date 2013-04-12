@@ -6,6 +6,7 @@
         './source/js/lib/string-format.js',
         './source/js/lib/jquery-1.8.2.js',
         './source/js/lib/underscore.js',
+        './source/js/lib/moment.js',
         './source/js/setup.js',
         './source/js/dal.js',
         './source/js/lib/fiber.js',

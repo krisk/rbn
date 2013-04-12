@@ -16,7 +16,7 @@ $(function() {
 
     function poll() {
 
-      pollTimer = setTimeout(function() {
+      var pollTimer = setTimeout(function() {
 
         if (stopped) {
           clearTimeout(pollTimer);
@@ -31,18 +31,25 @@ $(function() {
               return;
             }
 
-            var ids = _.map(items, function(item) {
-              return item.id;
-            });
+            var itemMap = {},
+              ids = _.map(items, function(item) {
+                itemMap[item.id] = item;
+                return item.id;
+              });
 
             if (previousIds) {
               var newIds = _.difference(ids, previousIds);
               if (newIds.length > 0) {
+                var firstUpdate = itemMap[newIds[0]];
                 if (RBN.Settings.get().showNotifications) {
-                  var notification = webkitNotifications.createNotification('icon.png', 'New RB', newIds.length);
+                  var icon = String.format(RBN.Settings.get().submitterImagelUrl, firstUpdate.submitter),
+                    title = String.format('{0} - {1}'. firstUpdate.submitter, firstUpdate.summary),
+                    description = newIds.length == 1 ? firstUpdate.description : String.format('And {0} more.', newIds.length),
+                    notification = webkitNotifications.createNotification(icon, title, description);
+
                   notification.show();
                 }
-                chrome.browserAction.setBadgeText({text: "" + newIds.length});
+                chrome.browserAction.setBadgeText({text: '' + newIds.length});
               }
             }
 

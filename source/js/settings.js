@@ -11,6 +11,7 @@
     var defaultSettings = {
       apiUrl: 'https://rb.corp.linkedin.com/api',
       reviewUrl: 'https://rb.corp.linkedin.com/r/{0}',
+      submitterImagelUrl: 'http://cinco.corp.linkedin.com/images/users/thumbnail/{0}.jpg',
       pollInterval: 1000 * 60 * 5,
       minItems: 5,
       maxItems: 25,
