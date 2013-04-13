@@ -14,19 +14,15 @@ $(function() {
 
     stopped = false;
 
-    function poll() {
-
+    (function poll() {
       var pollTimer = setTimeout(function() {
-
         if (stopped) {
           clearTimeout(pollTimer);
           pollTimer = null;
           return;
         }
 
-        RBN.DAL.getAllRBs()
-          .done(function(items) {
-
+        RBN.DAL.getAllRBs(true).done(function(items) {
             if (stopped) {
               return;
             }
@@ -43,7 +39,7 @@ $(function() {
                 var firstUpdate = itemMap[newIds[0]];
                 if (RBN.Settings.get().showNotifications) {
                   var icon = String.format(RBN.Settings.get().submitterImagelUrl, firstUpdate.submitter),
-                    title = String.format('{0} - {1}'. firstUpdate.submitter, firstUpdate.summary),
+                    title = String.format('{0} - {1}', firstUpdate.submitter, firstUpdate.summary),
                     description = newIds.length == 1 ? firstUpdate.description : String.format('And {0} more.', newIds.length),
                     notification = webkitNotifications.createNotification(icon, title, description);
 
@@ -59,9 +55,7 @@ $(function() {
           .done(poll);
 
       }, interval);
-    }
-
-    poll();
+    })();
   }
 
   Notifier.stop = function() {

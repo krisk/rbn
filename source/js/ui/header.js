@@ -6,7 +6,11 @@
 $(function() {
 
   RBN.UI.Header = Fiber.extend(function() {
-    var MINUTE = 1000 * 60;
+    var MINUTE = 1000 * 60,
+      MIN_POLL = 0,
+      MAX_POLL = 0,
+      MIN_ITEMS = 0,
+      MAX_ITEMS = 0;
 
     return {
       init: function($el) {
@@ -22,6 +26,11 @@ $(function() {
         this.$maxNumItemsText = $('#max-num-items-text');
         this.$pollIntervalText = $('#poll-interval-text');
         this.$timeDropdown = $('#time-dropdown');
+
+        MIN_POLL = parseInt(this.$pollIntervalText.attr('min'));
+        MAX_POLL = parseInt(this.$pollIntervalText.attr('max'));
+        MIN_ITEMS = parseInt(this.$maxNumItemsText.attr('min'));
+        MAX_ITEMS = parseInt(this.$maxNumItemsText.attr('max'));
 
         this.fillValues();
         this.bindEvents();
@@ -83,7 +92,7 @@ $(function() {
       },
       onMaxNumItemsChange: function() {
         var value = parseInt(this.$maxNumItemsText.val());
-        if (!_.isNumber(value) || value < RBN.Settings.defaults.minItems || value > RBN.Settings.defaults.maxItems) {
+        if (!_.isNumber(value) || value < MIN_ITEMS || value > MAX_ITEMS) {
           this.$maxNumItemsText.val(RBN.Settings.get().maxItems);
           return;
         }
@@ -91,7 +100,7 @@ $(function() {
       },
       onPollIntervalChange: function() {
         var value = parseInt(this.$pollIntervalText.val());
-        if (!_.isNumber(value) || value < RBN.Settings.defaults.minItems) {
+        if (!_.isNumber(value) || value < MIN_POLL || value > MAX_POLL) {
           this.$pollIntervalText.val(RBN.Settings.get().pollInterval / MINUTE );
           return;
         }
