@@ -51,8 +51,6 @@
   };
 
   RBN.DAL.getAllRBs = function(refresh) {
-    RBN.DAL.getCurrentUser();
-
     var dfd = $.Deferred();
 
     function loadFromCache() {
@@ -60,12 +58,12 @@
         items = window.localStorage['review_boards'];
       if (items) {
         expiry = window.localStorage['review_boards_expiry'];
-        items = JSON.parse(items);
         if (expiry < (new Date()).getTime()) {
           items = null;
           clearStorage();
           loadFromAPI();
         } else {
+          items = JSON.parse(items);
           dfd.resolve(items)
         }
       } else {
@@ -77,13 +75,13 @@
     function loadFromAPI() {
       RBN.DAL.getCurrentUser().done(function(user) {
 
-        var url = String.format(
-          '{0}/review-requests/?to-users={1}&status=pending&ship-it=0&last-updated-from={2}',
-          RBN.Settings.get().apiUrl,
-          user,
-          utils.getLastUpdatedFromISO8601());
-
-        $.getJSON(url).done(function(result) {
+        $.get(RBN.Settings.get().apiUrl + '/review-requests/', {
+            'to-users': user,
+            'status': 'pending',
+            'ship-it': '0',
+            'last-updated-from': utils.getLastUpdatedFromISO8601()
+          })
+          .done(function(result) {
 
           var items = _.map(result.review_requests, function(item) {
             return {
