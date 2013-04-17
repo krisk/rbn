@@ -47,9 +47,10 @@
       output: 'style.css'
     },
     icons: [
-      './source/icon.png',
-      './source/ghost_person.png',
-      './source/Settings-icon.png'
+      './source/images/icon.png',
+      './source/images/thumb-up-icon.png',
+      './source/images/ghost_person.png',
+      './source/images/Settings-icon.png'
     ],
     manifest: './source/manifest.json',
     popup: './source/popup.html'

@@ -12,6 +12,7 @@ body {
   list-style: none;
   padding: 0;
   width: 400px;
+  min-height: 160px;
 }
 .review-list li {
   margin: 0;
@@ -27,10 +28,17 @@ body {
   display: table-cell;
   vertical-align: middle;
   width: 100%;
+  position: relative;
 }
-.review-list li img {
+.review-list li .profile-img {
   width: 35px;
   margin-right: 8px;
+}
+.review-list li .ship-it-img {
+  display: inline-block;
+  position: absolute;
+  top: 0px;
+  right: 2px;
 }
 .review-list li:nth-child(odd) {
   background-color: #F2F2F2;

@@ -39,7 +39,7 @@
   <section class="search">
     <input type="text" id="search" placeholder="Search summary, submitter...">
     <button id="refresh-btn">refresh</button>
-    <img id="settings-btn" src="settings-icon.png" title="Settings"/>
+    <img id="settings-btn" src="images/settings-icon.png" title="Settings"/>
   </section>
   <section class="settings">
     <div class="settings-content">
@@ -105,9 +105,12 @@
 <script id="list-item-template" type="text/html">
   <li data-item-id="<%= id %>">
     <div class="body">
-      <img src="http://cinco.corp.linkedin.com/images/users/thumbnail/<%= submitter %>.jpg"></img>
+      <img class="profile-img" src="http://cinco.corp.linkedin.com/images/users/thumbnail/<%= submitter %>.jpg"></img>
       <div class="content">
         <span class="submitter"><%= submitter %></span>
+        <% if (hasShipIt) { %>
+          <img class="ship-it-img" src="images/thumb-up-icon.png" />
+        <% } %>
         <p class="summary"><%= summary %></p>
         <span class="updated"><%= moment(last_updated).fromNow() %></span>
       </div>

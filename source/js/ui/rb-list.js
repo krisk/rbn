@@ -12,7 +12,7 @@ $(function() {
       pollInterval: 1000 * 60 * 5
     };
 
-    var GHOST_PERSON_IMG = 'ghost_person.png';
+    var GHOST_PERSON_IMG = 'images/ghost_person.png';
 
     return {
       init: function($el, options) {
@@ -148,7 +148,7 @@ $(function() {
           $target = this.$target;
         }
 
-        $target.find('img').each(function() {
+        $target.find('.profile-img').each(function() {
           var $img = $(this),
             id = $img.closest('li').data('item-id'),
             src = $img.attr('src');

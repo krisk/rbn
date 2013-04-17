@@ -76,10 +76,13 @@
     copyImages: function() {
       console.log('Copying images'.grey);
 
+      var IMAGE_DIR = OUTPUT_DIR + '/images';
+      fs.mkdirSync(IMAGE_DIR);
+
       config.icons.forEach(function(item) {
         var file = fs.readFileSync(item);
         var name = item.substr(item.lastIndexOf('/') + 1);
-        fs.writeFileSync(OUTPUT_DIR + '/' + name, file);
+        fs.writeFileSync(IMAGE_DIR + '/' + name, file);
       });
     },
     copyCss: function() {

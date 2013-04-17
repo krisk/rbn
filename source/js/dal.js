@@ -77,25 +77,18 @@
 
         var params = {
           'to-users': user,
-          'status': 'pending',
+          'status': 'all',
           'last-updated-from': utils.getLastUpdatedFromISO8601()
         };
 
         var flags = RBN.Settings.get().displayOptions,
-          options = RBN.Constants.DisplayOptions;
+          options = RBN.Constants.DisplayOptions,
+          url = RBN.Settings.get().apiUrl + '/review-requests/',
+          dfds = [],
+          items = [];
 
-        if ((flags & options.needShipIt) && (flags & options.haveShipIt)) {
-          // Do nothing
-        } else if (flags & options.needShipIt) {
-          params['ship-it'] = '0';
-        } else if (flags & options.haveShipIt) {
-          params['ship-it'] = '1';
-        }
-
-        $.get(RBN.Settings.get().apiUrl + '/review-requests/', params)
-          .done(function(result) {
-
-          var items = _.map(result.review_requests, function(item) {
+        function add(result, hasShipIt) {
+          items = items.concat(_.map(result.review_requests, function(item) {
             return {
               id: item.id,
               summary: item.summary,
@@ -103,8 +96,36 @@
               last_updated: new Date(item.last_updated),
               status: item.status,
               time_added: new Date(item.time_added),
-              submitter: item.links.submitter.title
+              submitter: item.links.submitter.title,
+              hasShipIt: hasShipIt
             }
+          }));
+        }
+
+        // We make wo calls to the API, one requesting RBs with no ship-it, and the other to request RBs with ship-it.
+        // This is because if we make a single call asking for both (by ommitting the "ship-it" from the query string),
+        // the items returned do not have a key to describe whether it has a ship-it or not. Therefore, to solve this,
+        // we make two calls, thus being able to distinquish the items returned.
+
+        if (flags & options.needShipIt) {
+          dfds.push($.get(url, _.extend({}, params, {
+              'ship-it': '0'
+            })).done(function(result) {
+              add(result, false);
+            }));
+        }
+
+        if (flags & options.haveShipIt) {
+          dfds.push($.get(url, _.extend({}, params, {
+              'ship-it': '1'
+            })).done(function(result) {
+              add(result, true);
+            }));
+        }
+
+        $.when.apply(null, dfds).done(function() {
+          items.sort(function(a, b) {
+            return a.last_updated > b.last_updated ? -1 : 1;
           });
 
           window.localStorage['review_boards'] = JSON.stringify(items);
@@ -112,6 +133,7 @@
 
           dfd.resolve(items);
         });
+
       });
     }
 
