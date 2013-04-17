@@ -7,8 +7,6 @@ $(function() {
 
   RBN.App = (function() {
       return new (Fiber.extend(function() {
-        var MINUTE = 1000 * 60;
-
         return {
           init: function() {
             this.header = new RBN.UI.Header($('header'));
@@ -65,10 +63,11 @@ $(function() {
                 this.list.loadData();
                 break;
               case 'pollInterval':
-                this.list.options.pollInterval = args.value * MINUTE;
+                this.list.options.pollInterval = args.value * RBN.Constants.MINUTE;
                 this.list.startPolling();
                 break;
               case 'lastUpdatedFrom':
+              case 'displayOptions':
                 this.onRefresh();
                 break;
             }

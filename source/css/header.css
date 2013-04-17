@@ -39,7 +39,7 @@ header .settings {
 }
 
 header .settings.open {
-  height: 135px;
+  height: 160px;
 }
 header .settings .settings-content {
   padding: 5px;

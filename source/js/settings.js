@@ -6,7 +6,6 @@
 (function () {
 
   var Settings = Fiber.extend(function() {
-    var MINUTE = 1000 * 60;
 
     var defaultSettings = {
       apiUrl: 'https://rb.corp.linkedin.com/api',
@@ -15,7 +14,8 @@
       pollInterval: 1000 * 60 * 5,
       maxItems: 25,
       showNotifications: true,
-      lastUpdatedFrom: 4
+      lastUpdatedFrom: 4,
+      displayOptions: RBN.Constants.DisplayOptions.needShipIt
     };
 
     return {

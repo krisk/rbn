@@ -75,12 +75,24 @@
     function loadFromAPI() {
       RBN.DAL.getCurrentUser().done(function(user) {
 
-        $.get(RBN.Settings.get().apiUrl + '/review-requests/', {
-            'to-users': user,
-            'status': 'pending',
-            'ship-it': '0',
-            'last-updated-from': utils.getLastUpdatedFromISO8601()
-          })
+        var params = {
+          'to-users': user,
+          'status': 'pending',
+          'last-updated-from': utils.getLastUpdatedFromISO8601()
+        };
+
+        var flags = RBN.Settings.get().displayOptions,
+          options = RBN.Constants.DisplayOptions;
+
+        if ((flags & options.needShipIt) && (flags & options.haveShipIt)) {
+          // Do nothing
+        } else if (flags & options.needShipIt) {
+          params['ship-it'] = '0';
+        } else if (flags & options.haveShipIt) {
+          params['ship-it'] = '1';
+        }
+
+        $.get(RBN.Settings.get().apiUrl + '/review-requests/', params)
           .done(function(result) {
 
           var items = _.map(result.review_requests, function(item) {
