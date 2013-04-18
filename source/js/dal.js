@@ -26,13 +26,16 @@
     var user;
 
     return function() {
-      var dfd = $.Deferred();
+      var dfd = $.Deferred(),
+        url;
 
       if (user) {
         dfd.resolve(user);
       }
 
-      $.getJSON(RBN.Settings.get().apiUrl + '/session').done(function(result) {
+      url = String.format('{0}/api/session', RBN.Settings.get().url);
+
+      $.getJSON(url).done(function(result) {
         user = result.session.links.user.title;
         dfd.resolve(user);
       });
@@ -48,6 +51,7 @@
 
   RBN.DAL.saveSettings = function(settings) {
     window.localStorage['review_boards_settings'] = JSON.stringify(settings);
+    window.localStorage['review_boards_expiry'] = -1;
   };
 
   RBN.DAL.getAllRBs = function(refresh) {
@@ -83,9 +87,10 @@
 
         var flags = RBN.Settings.get().displayOptions,
           options = RBN.Constants.DisplayOptions,
-          url = RBN.Settings.get().apiUrl + '/review-requests/',
+          url = String.format('{0}/api/review-requests/', RBN.Settings.get().url)
           dfds = [],
-          items = [];
+          items = [],
+          imageUrl = String.format('{0}/{1}.jpg', RBN.Settings.get().submitterImagelUrl);
 
         function add(result, hasShipIt) {
           var arr = [];
@@ -100,6 +105,7 @@
                 status: item.status,
                 time_added: new Date(item.time_added),
                 submitter: item.links.submitter.title,
+                submitter_img_url: String.format('{0}/{1}.jpg', RBN.Settings.get().submitterImagelUrl, item.links.submitter.title),
                 hasShipIt: hasShipIt
               });
             }
@@ -134,7 +140,7 @@
           });
 
           window.localStorage['review_boards'] = JSON.stringify(items);
-          window.localStorage['review_boards_expiry'] =  (new Date()).getTime() + RBN.Settings.get().pollInterval;
+          window.localStorage['review_boards_expiry'] =  (new Date()).getTime() + RBN.Settings.get().pollFrequency;
 
           dfd.resolve(items);
         });

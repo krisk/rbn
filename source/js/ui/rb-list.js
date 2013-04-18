@@ -9,7 +9,7 @@ $(function() {
 
     var defaultOptions = {
       template: null,
-      pollInterval: 1000 * 60 * 5
+      pollFrequency: 1000 * 60 * 5
     };
 
     var GHOST_PERSON_IMG = 'images/ghost_person.png';
@@ -128,7 +128,7 @@ $(function() {
             .done(_.bind(this.startPolling, this));
         }, this);
 
-        this.pollTimer = setTimeout(bound, this.options.pollInterval);
+        this.pollTimer = setTimeout(bound, this.options.pollFrequency);
       },
       stopPolling: function() {
         clearTimeout(this.pollTimer);

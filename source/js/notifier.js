@@ -9,7 +9,7 @@ $(function() {
   var Notifier = {};
 
   Notifier.start = function() {
-    var interval = RBN.Settings.get().pollInterval,
+    var interval = RBN.Settings.get().pollFrequency,
       previousIds = null;
 
     stopped = false;
@@ -66,3 +66,18 @@ $(function() {
 
   window.Notifier = Notifier;
 });
+
+(function() {
+  var submitter = 'rblunden',
+    summary = "Sample summary",
+    description = "Long description goes here",
+    count = 2;
+
+  var icon = 'images/icon.png', //String.format(RBN.Settings.get().submitterImagelUrl, submitter),
+    title = String.format('{0} - {1}', submitter, summary),
+    description = count == 1 ? description : String.format('And {0} more.', count),
+    notification = webkitNotifications.createNotification(icon, title, description);
+
+  notification.show();
+
+})();

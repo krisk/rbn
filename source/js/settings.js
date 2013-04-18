@@ -8,10 +8,9 @@
   var Settings = Fiber.extend(function() {
 
     var defaultSettings = {
-      apiUrl: 'https://rb.corp.linkedin.com/api',
-      reviewUrl: 'https://rb.corp.linkedin.com/r/{0}',
-      submitterImagelUrl: 'http://cinco.corp.linkedin.com/images/users/thumbnail/{0}.jpg',
-      pollInterval: RBN.Constants.MINUTE * 5,
+      url: '',
+      submitterImagelUrl: '',
+      pollFrequency: RBN.Constants.MINUTE * 5,
       maxItems: RBN.Constants.Items.MAX,
       showNotifications: true,
       lastUpdatedFrom: RBN.Constants.LastUpdated.LAST_TWO_WEEKS,

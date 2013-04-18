@@ -1,0 +1,122 @@
+<!--
+  Copyright (c) 2012 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+
+  Brian Kennish <bkennish@chromium.org>
+
+  An option page for configuring notifications.
+-->
+<!doctype html>
+<html>
+  <head>
+    <title>RBN - Settings</title>
+
+    <!--[SCRIPTS]-->
+    <script src="js/lib/string-format.js"></script>
+    <script src="js/lib/jquery-1.8.2.js"></script>
+    <script src="js/lib/underscore.js"></script>
+    <script src="js/lib/moment.js"></script>
+
+    <script src="js/lib/fuse.js"></script>
+    <script src="js/lib/fiber.js"></script>
+    <script src="js/utils/mixins.js"></script>
+
+    <script src="js/setup.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/dal.js"></script>
+    <script src="js/settings.js"></script>
+
+    <script src="js/ui/options.js"></script>
+
+    <!--[CSS]-->
+    <link type="text/css" rel="stylesheet" href="css/options.css">
+  </head>
+  <body>
+    <header>
+      <h1>Settings</h1>
+    </header>
+
+    <section>
+      <h3>General</h3>
+      <div class="content">
+        <div>
+          <label for="rb-url-text" title="RB url">Review Board base URL: </label>
+        </div>
+        <div>
+          <input id="rb-url-text" class="url" value=""></input>
+        </div>
+
+        <div>
+          <label for="image-url-text" title="RB url">URL to fetch RB submitter image from: </label>
+        </div>
+        <div>
+          <input id="image-url-text" class="url" value=""></input>
+        </div>
+        <aside>
+          <i>Note: The RB submitter alias is used to determine the image</i>
+        </aside>
+      </div>
+    </section>
+
+    <section>
+      <h3>Notifications</h3>
+      <div class="content">
+        <input type="checkbox" id="notifications-chbx"/>
+        <label for="notifications-chbx" title="Show notification">Display notifications</label>
+      </div>
+    </section>
+
+    <section>
+      <h3>RB Requests</h3>
+      <div class="content">
+        <div>
+          <label for="max-num-items-text" title="Max number of RBs">Display a max of</label>
+          <input type="number" id="max-num-items-text" min="5" max="25">
+          <label for="max-num-items-text">RBs</label>
+          <label for="time-dropdown"> since</label>
+          <select id="time-dropdown">
+            <option value="1">today</option>
+            <option value="2">yesterday</option>
+            <option value="3">the last week</option>
+            <option value="4">the last 2 weeks</option>
+          </select>
+        </div>
+
+        <div>
+          <input type="checkbox" id="need-shipit-chbx" data-rbn-value="1" />
+          <label for="need-shipit-chbx">Show RBs which need a "Ship It!"</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="have-shipit-chbx" data-rbn-value="2" />
+          <label for="have-shipit-chbx">Show RBs which have a "Ship It!"</label>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h3>Polling</h3>
+      <div class="content">
+        <label for="poll-frequency-text" title="Poll internval">Poll every</label>
+        <input type="number" id="poll-frequency-text" min="1" max="60">
+        <label for="poll-frequency-text">minute(s)</label>
+      </div>
+    </section>
+
+    <section>
+      <h3>Information</h3>
+      <div class="content">
+        <p>
+          Issues? Feature requests?  Please use the <a href="https://github.com/krisk/rbn/issues">GitHub issue tracker</a>.
+        </p>
+        <p>
+          See the project on <a href="https://github.com/krisk/rbn/">GitHub</a>.
+        </p>
+      </div>
+    </section>
+
+  </body>
+</html>
+
+
