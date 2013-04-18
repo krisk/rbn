@@ -77,30 +77,6 @@
       Utils.uglify(result, OUTPUT_DIR + '/' + config.background.output);
     },
 
-    // Options page
-    copyOptionsPageSripts: function() {
-      console.log('Copying options page scripts'.grey);
-
-      var result = Utils.concat(config.options.files);
-      Utils.uglify(result, OUTPUT_DIR + '/' + config.options.output);
-    },
-    copyOptionsPageCss: function() {
-      console.log('Copying options page CSS'.grey);
-
-      var result = Utils.concat(config.popup.css.files);
-      fs.writeFileSync(OUTPUT_DIR + '/' + config.popup.css.output, result, FILE_ENCODING);
-    },
-    updateOptionsHtml: function() {
-      console.log('Updating Options HTML'.grey);
-
-      var file = fs.readFileSync(config.options.page, FILE_ENCODING);
-
-      file = file.replace(/<script[^>]*>[^<]*<\/script>/g, '');
-      file = file.replace('<!--[SCRIPTS]-->', '<script src="' + config.options.output + '"></script>');
-
-      fs.writeFileSync(OUTPUT_DIR + '/options.html', file, FILE_ENCODING);
-    },
-
     // Pop Up
     copyPopUpScripts: function() {
       console.log('Copying pop up scripts'.grey);
@@ -111,14 +87,15 @@
     copyPopUpCss: function() {
       console.log('Copying pop up CSS'.grey);
 
-      var result = Utils.concat(config.options.css.files);
-      fs.writeFileSync(OUTPUT_DIR + '/' + config.options.css.output, result, FILE_ENCODING);
+      var result = Utils.concat(config.popup.css.files);
+      fs.writeFileSync(OUTPUT_DIR + '/' + config.popup.css.output, result, FILE_ENCODING);
     },
     updatePopUpHtml: function() {
       console.log('Updating pop up HTML'.grey);
 
       var file = fs.readFileSync(config.popup.page, FILE_ENCODING);
 
+      // JS
       file = file.replace(/<script[^>]*>[^<]*<\/script>/g, '');
       file = file.replace('<!--[SCRIPTS]-->', '<script src="' + config.popup.output + '"></script>');
 
@@ -128,6 +105,36 @@
 
       fs.writeFileSync(OUTPUT_DIR + '/popup.html', file, FILE_ENCODING);
     },
+
+    // Options page
+    copyOptionsPageSripts: function() {
+      console.log('Copying options page scripts'.grey);
+
+      var result = Utils.concat(config.options.files);
+      Utils.uglify(result, OUTPUT_DIR + '/' + config.options.output);
+    },
+    copyOptionsPageCss: function() {
+      console.log('Copying options page CSS'.grey);
+
+      var result = Utils.concat(config.options.css.files);
+      fs.writeFileSync(OUTPUT_DIR + '/' + config.options.css.output, result, FILE_ENCODING);
+    },
+    updateOptionsHtml: function() {
+      console.log('Updating Options HTML'.grey);
+
+      var file = fs.readFileSync(config.options.page, FILE_ENCODING);
+
+      // JS
+      file = file.replace(/<script[^>]*>[^<]*<\/script>/g, '');
+      file = file.replace('<!--[SCRIPTS]-->', '<script src="' + config.options.output + '"></script>');
+
+      // CSS
+      file = file.replace(/<link[^>]*[^>]*>/g, '');
+      file = file.replace('<!--[CSS]-->', '<link type="text/css" rel="stylesheet" href="'+ config.options.css.output + '">');
+
+      fs.writeFileSync(OUTPUT_DIR + '/options.html', file, FILE_ENCODING);
+    },
+
     copyImages: function() {
       console.log('Copying images'.grey);
 
