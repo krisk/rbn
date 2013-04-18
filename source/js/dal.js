@@ -77,7 +77,7 @@
 
         var params = {
           'to-users': user,
-          'status': RBN.Constants.status.ALL,
+          'status': RBN.Constants.Status.ALL,
           'last-updated-from': utils.getLastUpdatedFromISO8601()
         };
 
@@ -91,7 +91,7 @@
           var arr = [];
 
           _.each(result.review_requests, function(item) {
-            if (_.contains([RBN.Constants.status.PENDING, RBN.Constants.status.SUBMITTED], item.status)) {
+            if (_.contains([RBN.Constants.Status.PENDING, RBN.Constants.Status.SUBMITTED], item.status)) {
               arr.push({
                 id: item.id,
                 summary: item.summary,
@@ -112,7 +112,7 @@
         // the items returned do not have a key to describe whether it has a ship-it or not. Therefore, to solve this,
         // we make two calls, thus being able to distinquish the items returned.
 
-        if (flags & options.needShipIt) {
+        if (flags & options.NEED_SHIP_IT) {
           dfds.push($.get(url, _.extend({}, params, {
               'ship-it': '0'
             })).done(function(result) {
@@ -120,7 +120,7 @@
             }));
         }
 
-        if (flags & options.haveShipIt) {
+        if (flags & options.HAVE_SHIP_IT) {
           dfds.push($.get(url, _.extend({}, params, {
               'ship-it': '1'
             })).done(function(result) {

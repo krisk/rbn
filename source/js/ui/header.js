@@ -49,7 +49,7 @@ $(function() {
         this.$notifictionsCheckbox.prop('checked', RBN.Settings.get().showNotifications);
         this.$maxNumItemsText.val(RBN.Settings.get().maxItems);
         this.$pollIntervalText.val(RBN.Settings.get().pollInterval / RBN.Constants.MINUTE);
-        this.$timeDropdown.val(RBN.Settings.get().lastUpdatedFrom);
+        this.$timeDropdown.val('' + RBN.Settings.get().lastUpdatedFrom);
 
         var flags = RBN.Settings.get().displayOptions;
         this.$needShipitCheckbox.prop('checked', RBN.Constants.DisplayOptions.NEED_SHIP_IT & flags);
@@ -110,7 +110,7 @@ $(function() {
         RBN.Settings.get().pollInterval = value * RBN.Constants.MINUTE;
       },
       onTimeChange: function() {
-        RBN.Settings.get().lastUpdatedFrom = this.$timeDropdown.val();
+        RBN.Settings.get().lastUpdatedFrom = parseInt(this.$timeDropdown.val());
       },
       onNeedShipItChanged: function() {
         if (this.$needShipitCheckbox.prop('checked')) {

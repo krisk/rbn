@@ -10,6 +10,7 @@
   if (version > installedVersion) {
     window.localStorage.removeItem('review_boards');
     window.localStorage.removeItem('review_boards_expiry');
+    window.localStorage.removeItem('review_boards_settings');
   }
   window.localStorage['rbn_version'] = version;
 })();
