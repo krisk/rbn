@@ -13,8 +13,8 @@
       pollFrequency: RBN.Constants.MINUTE * 5,
       maxItems: RBN.Constants.Items.MAX,
       showNotifications: true,
-      lastUpdatedFrom: RBN.Constants.LastUpdated.LAST_TWO_WEEKS,
-      displayOptions: RBN.Constants.DisplayOptions.NEED_SHIP_IT
+      lastUpdatedFrom: RBN.Constants.LastUpdated.YESTERDAY,
+      displayOptions: RBN.Constants.DisplayOptions.NEED_SHIP_IT|RBN.Constants.DisplayOptions.HAVE_SHIP_IT
     };
 
     return {

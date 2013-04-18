@@ -21,6 +21,16 @@ header .search input {
   width: 250px;
 }
 
+#settings-btn {
+  cursor: pointer;
+  position: absolute;
+  right: 15px;
+  top: 9px;
+}
+#settings-btn:active {
+  top: 11px;
+}
+
 #no-settings-message {
   display: none;
   vertical-align: middle;

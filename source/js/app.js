@@ -22,27 +22,26 @@ $(function() {
                 pollFrequency: RBN.Settings.get().pollFrequency,
                 template: _.template($('#list-item-template').html())
               });
-              this.bindEvents();
             }
+
+            this.bindEvents();
           },
           showNoSettingsMessage: function() {
             $('#no-settings-message').show();
             $('#settings-link').on('click', this.openOptions);
           },
-          openOptions: function() {
-            var optionsUrl = chrome.extension.getURL("options.html");
-            chrome.tabs.create({
-              url: optionsUrl
-            });
-          },
           bindEvents: function() {
             this.header.on('search', _.bind(this.onSearch, this));
             this.header.on('refresh', _.bind(this.onRefresh, this));
+            this.header.on('settings', this.openSettings);
 
-            this.list.on('selected', _.bind(this.onItemSelected, this));
-
-            $('.information').find('a').on('click', function() {
-              chrome.tabs.create({ url: this.href });
+            if (this.list) {
+              this.list.on('selected', _.bind(this.onItemSelected, this));
+            }
+          },
+          openSettings: function() {
+            chrome.tabs.create({
+              url: chrome.extension.getURL('options.html')
             });
           },
           // Header events

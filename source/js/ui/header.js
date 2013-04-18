@@ -13,12 +13,17 @@ $(function() {
         this.$el = $el;
         this.$refreshButtton = $('#refresh-btn');
         this.$searchInput = $('#search');
+        this.$settingsButton = $('#settings-btn');
 
         this.bindEvents();
       },
       bindEvents: function() {
         this.$searchInput.on('keyup', _.debounce(_.bind(this.onSearchKeyUp, this), 100));
         this.$refreshButtton.on('click', _.bind(this.onRefreshClicked, this));
+        this.$settingsButton.on('click', _.bind(this.openSettings, this));
+      },
+      openSettings: function() {
+        this.trigger('settings');
       },
       onSearchKeyUp: function() {
         var searchText = this.$searchInput.val();
