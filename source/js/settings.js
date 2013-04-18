@@ -11,11 +11,11 @@
       apiUrl: 'https://rb.corp.linkedin.com/api',
       reviewUrl: 'https://rb.corp.linkedin.com/r/{0}',
       submitterImagelUrl: 'http://cinco.corp.linkedin.com/images/users/thumbnail/{0}.jpg',
-      pollInterval: 1000 * 60 * 5,
-      maxItems: 25,
+      pollInterval: RBN.Constants.MINUTE * 5,
+      maxItems: RBN.Constants.Items.MAX,
       showNotifications: true,
-      lastUpdatedFrom: 4,
-      displayOptions: RBN.Constants.DisplayOptions.needShipIt
+      lastUpdatedFrom: RBN.Constants.LastUpdated.LAST_TWO_WEEKS,
+      displayOptions: RBN.Constants.DisplayOptions.NEED_SHIP_IT
     };
 
     return {

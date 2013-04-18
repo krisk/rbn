@@ -5,18 +5,31 @@
     MINUTE: 1000 * 60,
 
     DisplayOptions: {
-      needShipIt: 1,
-      haveShipIt: 2
+      NEED_SHIP_IT: 1,
+      HAVE_SHIP_IT: 2
     },
 
     Poll: {
-      min: 1,
-      max: 60
+      MIN: 1,
+      MAX: 60
     },
 
     Items: {
-      min: 5,
-      max: 25
+      MIN: 5,
+      MAX: 25
+    },
+
+    LastUpdated: {
+      TODAY: 1,
+      YESTERDAY: 2,
+      LAST_WEEK: 3,
+      LAST_TWO_WEEKS: 4
+    },
+
+    Status: {
+      ALL: 'all',
+      PENDING: 'pending',
+      SUBMITTED: 'submitted'
     }
 
   };

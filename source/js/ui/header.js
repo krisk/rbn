@@ -41,10 +41,10 @@ $(function() {
         this.$haveShipitCheckbox.on('change', _.bind(this.onHaveShipitChanged, this));
       },
       fillValues: function() {
-        this.$pollIntervalText.attr('min', RBN.Constants.Poll.min);
-        this.$pollIntervalText.attr('max', RBN.Constants.Poll.max);
-        this.$maxNumItemsText.attr('min', RBN.Constants.Items.min);
-        this.$maxNumItemsText.attr('max', RBN.Constants.Items.max);
+        this.$pollIntervalText.attr('min', RBN.Constants.Poll.MIN);
+        this.$pollIntervalText.attr('max', RBN.Constants.Poll.MAX);
+        this.$maxNumItemsText.attr('min', RBN.Constants.Items.MIN);
+        this.$maxNumItemsText.attr('max', RBN.Constants.Items.MAX);
 
         this.$notifictionsCheckbox.prop('checked', RBN.Settings.get().showNotifications);
         this.$maxNumItemsText.val(RBN.Settings.get().maxItems);
@@ -52,8 +52,8 @@ $(function() {
         this.$timeDropdown.val(RBN.Settings.get().lastUpdatedFrom);
 
         var flags = RBN.Settings.get().displayOptions;
-        this.$needShipitCheckbox.prop('checked', RBN.Constants.DisplayOptions.needShipIt & flags);
-        this.$haveShipitCheckbox.prop('checked', RBN.Constants.DisplayOptions.haveShipIt & flags);
+        this.$needShipitCheckbox.prop('checked', RBN.Constants.DisplayOptions.NEED_SHIP_IT & flags);
+        this.$haveShipitCheckbox.prop('checked', RBN.Constants.DisplayOptions.HAVE_SHIP_IT & flags);
       },
       onSettingsButtonClick: function() {
         if (this._isOpened) {
@@ -95,7 +95,7 @@ $(function() {
       },
       onMaxNumItemsChange: function() {
         var value = parseInt(this.$maxNumItemsText.val());
-        if (!_.isNumber(value) || value < RBN.Constants.Items.min || value > RBN.Constants.Items.max) {
+        if (!_.isNumber(value) || value < RBN.Constants.Items.MIN || value > RBN.Constants.Items.MAX) {
           this.$maxNumItemsText.val(RBN.Settings.get().maxItems);
           return;
         }
@@ -103,7 +103,7 @@ $(function() {
       },
       onPollIntervalChange: function() {
         var value = parseInt(this.$pollIntervalText.val());
-        if (!_.isNumber(value) || value < RBN.Constants.Poll.min || value > RBN.Constants.Poll.max) {
+        if (!_.isNumber(value) || value < RBN.Constants.Poll.MIN || value > RBN.Constants.Poll.MAX) {
           this.$pollIntervalText.val(RBN.Settings.get().pollInterval / RBN.Constants.MINUTE );
           return;
         }
@@ -114,16 +114,16 @@ $(function() {
       },
       onNeedShipItChanged: function() {
         if (this.$needShipitCheckbox.prop('checked')) {
-          RBN.Settings.get().displayOptions |= RBN.Constants.DisplayOptions.needShipIt;
+          RBN.Settings.get().displayOptions |= RBN.Constants.DisplayOptions.NEED_SHIP_IT;
         } else {
-          RBN.Settings.get().displayOptions &= ~RBN.Constants.DisplayOptions.needShipIt;
+          RBN.Settings.get().displayOptions &= ~RBN.Constants.DisplayOptions.NEED_SHIP_IT;
         }
       },
       onHaveShipitChanged: function() {
         if (this.$haveShipitCheckbox.prop('checked')) {
-          RBN.Settings.get().displayOptions |= RBN.Constants.DisplayOptions.haveShipIt;
+          RBN.Settings.get().displayOptions |= RBN.Constants.DisplayOptions.HAVE_SHIP_IT;
         } else {
-          RBN.Settings.get().displayOptions &= ~RBN.Constants.DisplayOptions.haveShipIt;
+          RBN.Settings.get().displayOptions &= ~RBN.Constants.DisplayOptions.HAVE_SHIP_IT;
         }
       }
     }

@@ -10,13 +10,13 @@
         var FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
         switch (RBN.Settings.get().lastUpdatedFrom) {
-          case '1':
+          case RBN.Constants.LastUpdated.TODAY:
             return moment().startOf('day').format(FORMAT);
-          case '2':
+          case RBN.Constants.LastUpdated.YESTERDAY:
             return moment().subtract('days', 1).startOf('day').format(FORMAT);
-          case '3':
+          case RBN.Constants.LastUpdated.LAST_WEEK:
             return moment().subtract('days', 7).startOf('day').format(FORMAT);
-          case '4':
+          case RBN.Constants.LastUpdated.LAST_TWO_WEEKS:
             return moment().subtract('days', 14).startOf('day').format(FORMAT);
         }
     }
@@ -77,7 +77,7 @@
 
         var params = {
           'to-users': user,
-          'status': 'all',
+          'status': RBN.Constants.status.ALL,
           'last-updated-from': utils.getLastUpdatedFromISO8601()
         };
 
@@ -88,18 +88,23 @@
           items = [];
 
         function add(result, hasShipIt) {
-          items = items.concat(_.map(result.review_requests, function(item) {
-            return {
-              id: item.id,
-              summary: item.summary,
-              description: item.description,
-              last_updated: new Date(item.last_updated),
-              status: item.status,
-              time_added: new Date(item.time_added),
-              submitter: item.links.submitter.title,
-              hasShipIt: hasShipIt
+          var arr = [];
+
+          _.each(result.review_requests, function(item) {
+            if (_.contains([RBN.Constants.status.PENDING, RBN.Constants.status.SUBMITTED], item.status)) {
+              arr.push({
+                id: item.id,
+                summary: item.summary,
+                description: item.description,
+                last_updated: new Date(item.last_updated),
+                status: item.status,
+                time_added: new Date(item.time_added),
+                submitter: item.links.submitter.title,
+                hasShipIt: hasShipIt
+              });
             }
-          }));
+          });
+          items = items.concat(arr);
         }
 
         // We make wo calls to the API, one requesting RBs with no ship-it, and the other to request RBs with ship-it.

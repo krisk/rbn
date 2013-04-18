@@ -109,7 +109,9 @@
       <div class="content">
         <span class="submitter"><%= submitter %></span>
         <% if (hasShipIt) { %>
-          <img class="ship-it-img" src="images/thumb-up-icon.png" />
+          <img class="ship-it-img" src="images/thumb-up-icon.png" title="Has a 'Ship It!'"/>
+        <% } else { %>
+          <img class="ship-it-img" src="images/exclamation-icon.png" title="Needs a 'Ship It!'"/>
         <% } %>
         <p class="summary"><%= summary %></p>
         <span class="updated"><%= moment(last_updated).fromNow() %></span>
