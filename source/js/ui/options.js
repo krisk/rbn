@@ -10,7 +10,6 @@ $(function() {
         return {
           init: function() {
             this.$rbUrlText = $('#rb-url-text');
-            this.$imageUrlText = $('#image-url-text');
 
             this.$notifictionsCheckbox = $('#notifications-chbx');
             this.$maxNumItemsText = $('#max-num-items-text');
@@ -26,7 +25,6 @@ $(function() {
 
           bindEvents: function() {
             this.$rbUrlText.on('change', _.bind(this.onRBUrlChange, this));
-            this.$imageUrlText.on('change', _.bind(this.onImageUrlChange, this));
             this.$notifictionsCheckbox.on('change', _.bind(this.onNotificationPermissionChange, this));
             this.$maxNumItemsText.on('change', _.bind(this.onMaxNumItemsChange, this));
             this.$pollFrequencyText.on('change', _.bind(this.onpollFrequencyChange, this));
@@ -36,7 +34,6 @@ $(function() {
           },
           fillValues: function() {
             this.$rbUrlText.val(RBN.Settings.get().url);
-            this.$imageUrlText.val(RBN.Settings.get().submitterImagelUrl);
 
             this.$pollFrequencyText.attr('min', RBN.Constants.Poll.MIN);
             this.$pollFrequencyText.attr('max', RBN.Constants.Poll.MAX);
@@ -54,9 +51,6 @@ $(function() {
           },
           onRBUrlChange: function() {
             RBN.Settings.get().url = this.$rbUrlText.val();
-          },
-          onImageUrlChange: function() {
-            RBN.Settings.get().submitterImagelUrl = this.$imageUrlText.val();
           },
           onNotificationPermissionChange: function() {
             RBN.Settings.get().showNotifications = this.$notifictionsCheckbox.prop('checked');

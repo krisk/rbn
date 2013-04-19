@@ -12,7 +12,7 @@ $(function() {
       pollFrequency: 1000 * 60 * 5
     };
 
-    var GHOST_PERSON_IMG = 'images/ghost_person.png';
+    //var GHOST_PERSON_IMG = 'images/ghost_person.png';
 
     return {
       init: function($el, options) {
@@ -105,6 +105,7 @@ $(function() {
       },
       update: function(items) {
         this.reset();
+
         this.items.push(items);
 
         if (this.isSearchVisible()) {
@@ -148,19 +149,29 @@ $(function() {
           $target = this.$target;
         }
 
-        $target.find('.profile-img').each(function() {
-          var $img = $(this),
-            id = $img.closest('li').data('item-id'),
-            src = $img.attr('src');
+        var imagesDfds = [];
 
-          if (self.badImageMap[id]) {
-            $img.attr('src', GHOST_PERSON_IMG)
-          } else {
-            $img.error(function() {
-              $img.attr('src', GHOST_PERSON_IMG);
-              self.badImageMap[id] = true;
-            });
-          }
+        // Fetch the images that are have not been retrieved/cached
+        $target.find('.profile-img.default').each(function() {
+          var $img = $(this),
+            submitter = $img.closest('li').data('item-submitter'),
+            dfd = $.Deferred();
+
+          imagesDfds.push(dfd);
+
+          RBN.DAL.Users.getInfoOfUser(submitter)
+            .done(function(info) {
+              $img
+                .attr('src', info.avatarUrl)
+                .removeClass('default');
+
+            })
+            .always(dfd.resolve);
+        });
+
+        // When all images have been retrieved, save them all
+        $.when.apply(null, imagesDfds).done(function() {
+          RBN.DAL.Users.saveAll();
         });
       },
       render: function() {
@@ -172,7 +183,7 @@ $(function() {
           this.$target.append(output);
         }
 
-        this.computeImages();
+       this.computeImages();
       }
     }
   });

@@ -65,9 +65,13 @@
 </section>
 
 <script id="list-item-template" type="text/html">
-  <li data-item-id="<%= id %>">
+  <li data-item-id="<%= id %>" data-item-submitter="<%= submitter %>">
     <div class="body">
-      <img class="profile-img" src="<%= submitter_img_url %>"></img>
+      <% if (submitterImagelUrl) { %>
+        <img class="profile-img" src="<%= submitterImagelUrl %>"></img>
+      <% } else { %>
+        <img class="profile-img default" src="images/ghost_person.png"></img>
+      <% } %>
       <div class="content">
         <span class="submitter"><%= submitter %></span>
         <% if (hasShipIt) { %>

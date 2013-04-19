@@ -13,6 +13,9 @@ $(function() {
 
             this.header = new RBN.UI.Header($('header'));
 
+            this.$settingsLink =  $('#settings-link');
+            this.$noSettingsMessage = $('#no-settings-message');
+
             if (!url) {
               this.header.enable(false);
               this.showNoSettingsMessage();
@@ -27,13 +30,14 @@ $(function() {
             this.bindEvents();
           },
           showNoSettingsMessage: function() {
-            $('#no-settings-message').show();
-            $('#settings-link').on('click', this.openOptions);
+            this.$noSettingsMessage.show();
           },
           bindEvents: function() {
             this.header.on('search', _.bind(this.onSearch, this));
             this.header.on('refresh', _.bind(this.onRefresh, this));
             this.header.on('settings', this.openSettings);
+
+            this.$settingsLink.on('click', this.openSettings);
 
             if (this.list) {
               this.list.on('selected', _.bind(this.onItemSelected, this));

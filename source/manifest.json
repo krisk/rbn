@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
 
-  "name": "RBN",
-  "description": "Keep up with all your review board items",
-  "version": "1.4",
+  "name": "RB Notifier",
+  "description": "View notifications of review board requests assigned to you.",
+  "version": "1.5",
 
   "permissions": [
     "https://rb.corp.linkedin.com/api/",

@@ -44,14 +44,56 @@
     }
   })();
 
+  RBN.DAL.Users = (function() {
+
+    var users = {},
+      result = window.localStorage['rbn_users'];
+      users = result ? JSON.parse(result) : {};
+
+    return {
+      saveAll: function() {
+        window.localStorage['rbn_users'] = JSON.stringify(users);
+      },
+      getCachedInfoOfUser: function(user) {
+         return users[user];
+      },
+      getInfoOfUser: function(user) {
+        var dfd = $.Deferred(),
+          url,
+          data = users[user];
+
+        if (data) {
+          dfd.resolve(data);
+        } else {
+          var url = String.format('{0}/api/users/{1}', RBN.Settings.get().url, user);
+
+          $.getJSON(url).done(function(result) {
+            var data = {
+              avatarUrl: result.user.avatar_url,
+              email: result.user.email,
+              fullname: result.user.fullname
+            };
+
+            dfd.resolve(data);
+
+            users[user] = data;
+          });
+        }
+
+        return dfd.promise();
+      }
+    };
+
+  })();
+
   RBN.DAL.getSettings = function() {
-    var settings = window.localStorage['review_boards_settings'];
+    var settings = window.localStorage['rbn_settings'];
     return settings && JSON.parse(settings);
   };
 
   RBN.DAL.saveSettings = function(settings) {
-    window.localStorage['review_boards_settings'] = JSON.stringify(settings);
-    window.localStorage['review_boards_expiry'] = -1;
+    window.localStorage['rbn_settings'] = JSON.stringify(settings);
+    window.localStorage['rbn_items_expiry'] = -1;
   };
 
   RBN.DAL.getAllRBs = function(refresh) {
@@ -59,9 +101,9 @@
 
     function loadFromCache() {
       var expiry,
-        items = window.localStorage['review_boards'];
+        items = window.localStorage['rbn_items'];
       if (items) {
-        expiry = window.localStorage['review_boards_expiry'];
+        expiry = window.localStorage['rbn_items_expiry'];
         if (expiry < (new Date()).getTime()) {
           items = null;
           clearStorage();
@@ -89,14 +131,16 @@
           options = RBN.Constants.DisplayOptions,
           url = String.format('{0}/api/review-requests/', RBN.Settings.get().url)
           dfds = [],
-          items = [],
-          imageUrl = String.format('{0}/{1}.jpg', RBN.Settings.get().submitterImagelUrl);
+          items = [];
 
         function add(result, hasShipIt) {
           var arr = [];
 
           _.each(result.review_requests, function(item) {
             if (_.contains([RBN.Constants.Status.PENDING, RBN.Constants.Status.SUBMITTED], item.status)) {
+
+              var user = RBN.DAL.Users.getCachedInfoOfUser(item.links.submitter.title);
+
               arr.push({
                 id: item.id,
                 summary: item.summary,
@@ -105,11 +149,12 @@
                 status: item.status,
                 time_added: new Date(item.time_added),
                 submitter: item.links.submitter.title,
-                submitter_img_url: String.format('{0}/{1}.jpg', RBN.Settings.get().submitterImagelUrl, item.links.submitter.title),
-                hasShipIt: hasShipIt
+                hasShipIt: hasShipIt,
+                submitterImagelUrl: user ? user.avatarUrl : null
               });
             }
           });
+
           items = items.concat(arr);
         }
 
@@ -139,8 +184,8 @@
             return a.last_updated > b.last_updated ? -1 : 1;
           });
 
-          window.localStorage['review_boards'] = JSON.stringify(items);
-          window.localStorage['review_boards_expiry'] =  (new Date()).getTime() + RBN.Settings.get().pollFrequency;
+          window.localStorage['rbn_items'] = JSON.stringify(items);
+          window.localStorage['rbn_items_expiry'] =  (new Date()).getTime() + RBN.Settings.get().pollFrequency;
 
           dfd.resolve(items);
         });
@@ -149,8 +194,8 @@
     }
 
     function clearStorage() {
-      window.localStorage.removeItem('review_boards');
-      window.localStorage.removeItem('review_boards_expiry');
+      window.localStorage.removeItem('rbn_items');
+      window.localStorage.removeItem('rbn_items_expiry');
     }
 
     if (refresh) {
