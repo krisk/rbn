@@ -5,7 +5,9 @@ RBN - Review Board Notifier
 
 Download the `.crx` file found in the `package` folder, and simply drag it into `chrome://extensions/`.
 
-### Build
+### Want to build from source?
+
+Simply do:
 
 `node build.js`
 
