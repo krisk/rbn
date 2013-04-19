@@ -1,11 +1,15 @@
 RBN - Review Board Notifier
 ============================
 
+### Ready to use
+
+Download the `.crx` file found in the `package` folder, and simply drag it into `chrome://extensions/`.
+
 ### Build
 
 `node build.js`
 
-Creates a production ready (all scripts minified) Chrome Extension, in the `package` folder.  Simply drag the create `.crx` file into `chrome://extensions/`.
+Creates a production ready (all scripts minified) Chrome Extension `.crx` file in the `package` folder.
 
 ### Developer's version
 
