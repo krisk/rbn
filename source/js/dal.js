@@ -219,7 +219,7 @@
           if (flags & options.HAVE_SHIP_IT) {
             dfds.push(
               $.get(url, _.extend({}, params, {
-                'ship-it': '0'
+                'ship-it': '1'
               }))
               .pipe(this.validateResponse)
               .done(function(result) {
