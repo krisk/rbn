@@ -3,66 +3,69 @@
  * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
-$(function() {
+(function($, _, window) {
 
-  var stopped = false;
-  var Notifier = {};
+  $(function() {
+    var stopped = false;
+    var Notifier = {};
 
-  Notifier.start = function() {
-    var interval = RBN.Settings.get().pollFrequency,
-      previousIds = null;
+    Notifier.start = function() {
+      var interval = RBN.Settings.get().pollFrequency,
+        previousIds = null;
 
-    stopped = false;
+      stopped = false;
 
-    (function poll() {
-      var pollTimer = setTimeout(function() {
-        if (stopped) {
-          clearTimeout(pollTimer);
-          pollTimer = null;
-          return;
-        }
+      (function poll() {
+        var pollTimer = setTimeout(function() {
+          if (stopped) {
+            clearTimeout(pollTimer);
+            pollTimer = null;
+            return;
+          }
 
-        RBN.DAL.getAllRBs(true).done(function(items) {
-            if (stopped) {
-              return;
-            }
-
-            var itemMap = {},
-              ids = _.map(items, function(item) {
-                itemMap[item.id] = item;
-                return item.id;
-              });
-
-            if (previousIds) {
-              var newIds = _.difference(ids, previousIds);
-              if (newIds.length > 0) {
-                var firstUpdate = itemMap[newIds[0]];
-                if (RBN.Settings.get().showNotifications) {
-                  var icon = String.format(RBN.Settings.get().submitterImagelUrl, firstUpdate.submitter),
-                    title = String.format('{0} - {1}', firstUpdate.submitter, firstUpdate.summary),
-                    description = newIds.length == 1 ? firstUpdate.description : String.format('And {0} more.', newIds.length),
-                    notification = webkitNotifications.createNotification(icon, title, description);
-
-                  notification.show();
-                }
-                chrome.browserAction.setBadgeText({text: '' + newIds.length});
+          RBN.DAL.RB.get(true).done(function(items) {
+              if (stopped) {
+                return;
               }
-            }
 
-            previousIds = ids;
+              var itemMap = {},
+                ids = _.map(items, function(item) {
+                  itemMap[item.id] = item;
+                  return item.id;
+                });
 
-          })
-          .done(poll);
+              if (previousIds) {
+                var newIds = _.difference(ids, previousIds);
+                if (newIds.length > 0) {
+                  var firstUpdate = itemMap[newIds[0]];
+                  if (RBN.Settings.get().showNotifications) {
+                    var icon = firstUpdate.submitterImagelUrl,
+                      title = String.format('{0} - {1}', firstUpdate.submitter, firstUpdate.summary),
+                      description = newIds.length == 1 ? firstUpdate.description : String.format('And {0} more.', newIds.length),
+                      notification = webkitNotifications.createNotification(icon, title, description);
 
-      }, interval);
-    })();
-  }
+                    notification.show();
+                  }
+                  chrome.browserAction.setBadgeText({text: '' + newIds.length});
+                }
+              }
 
-  Notifier.stop = function() {
-    stopped = true;
-  };
+              previousIds = ids;
 
-  Notifier.start();
+            })
+            .done(poll);
 
-  window.Notifier = Notifier;
-});
+        }, interval);
+      })();
+    }
+
+    Notifier.stop = function() {
+      stopped = true;
+    };
+
+    Notifier.start();
+
+    window.Notifier = Notifier;
+  });
+
+})(jQuery, _, window);

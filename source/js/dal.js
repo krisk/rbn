@@ -3,45 +3,33 @@
  * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
-(function() {
-
-  var utils = {
-    getLastUpdatedFromISO8601: function() {
-        var FORMAT = 'YYYY-MM-DDTHH:mm:ss';
-
-        switch (RBN.Settings.get().lastUpdatedFrom) {
-          case RBN.Constants.LastUpdated.TODAY:
-            return moment().startOf('day').format(FORMAT);
-          case RBN.Constants.LastUpdated.YESTERDAY:
-            return moment().subtract('days', 1).startOf('day').format(FORMAT);
-          case RBN.Constants.LastUpdated.LAST_WEEK:
-            return moment().subtract('days', 7).startOf('day').format(FORMAT);
-          case RBN.Constants.LastUpdated.LAST_TWO_WEEKS:
-            return moment().subtract('days', 14).startOf('day').format(FORMAT);
-        }
-    }
-  };
+(function($, _, window) {
 
   var DAL = Fiber.extend(function() {
+    var STATUS_CODES = {
+      UAUTHORIZED: 401
+    };
+
     return {
       validateResponse: function(data, text, xhr) {
         if (data.session && !data.session.authenticated) {
           var deferred = $.Deferred();
-          deferred.rejectWith(this, [{ status: 401 }]);
+          deferred.rejectWith(this, [{ status: STATUS_CODES.UAUTHORIZED }]);
           return deferred;
         }
         return data;
       },
       checkError: function(error) {
-        if (error && error.status === 401) {
-          this.trigger('unathorized');
+        if (error && error.status === STATUS_CODES.UAUTHORIZED) {
+          this.trigger('unauthorized');
         }
       }
     };
   });
+
   Fiber.mixin(DAL, Mixins.Event);
 
-  var Users = DAL.extend(function() {
+  RBN.DAL.Users = new (DAL.extend(function(base) {
     return {
       init: function() {
         this.result = window.localStorage['rbn_users'];
@@ -57,34 +45,44 @@
       getInfoOfUser: function(user) {
         var dfd = $.Deferred(),
           url,
-          data = this.getCachedInfoOfUser(user);
+          data = this.getCachedInfoOfUser(user),
+          url,
+          onDone, onError;
 
         if (data) {
           dfd.resolve(data);
         } else {
-          var url = String.format('{0}/api/users/{1}', RBN.Settings.get().url, user);
+          url = String.format('{0}/api/users/{1}', RBN.Settings.get().url, user);
+
+          onDone = function(result) {
+            console.log(result);
+
+            var data = {
+              email: result.user.email,
+              fullname: result.user.fullname,
+              avatarUrl: result.user.avatar_url
+            };
+
+            dfd.resolve(data);
+            this.users[user] = data;
+          };
+
+          onError = function(error) {
+            this.checkError(error);
+            dfd.reject(error);
+          };
 
           $.getJSON(url)
             .pipe(this.validateResponse)
-            .done(function(result) {
-              var data = {
-                avatarUrl: result.user.avatar_url,
-                email: result.user.email,
-                fullname: result.user.fullname
-              };
-
-              dfd.resolve(data);
-
-              this.users[user] = data;
-            })
-            .fail(_.bind(this.checkError, this));
+            .done(_.bind(onDone, this))
+            .fail(_.bind(onError, this));
         }
 
         return dfd.promise();
       },
       getCurrentUser: function() {
         var dfd = $.Deferred(),
-          url;
+          url, onDone, onError;
 
         if (this.currentUser) {
           dfd.resolve(this.currentUser);
@@ -92,21 +90,27 @@
 
         url = String.format('{0}/api/session', RBN.Settings.get().url);
 
+        onDone = function(result) {
+          this.currentUser = result.session.links.user.title;
+          dfd.resolve(this.currentUser);
+        };
+
+        onError = function(error) {
+          this.checkError(error);
+          dfd.reject(error);
+        };
+
         $.getJSON(url)
           .pipe(this.validateResponse)
-          .done(_.bind(function(result) {
-            this.currentUser = result.session.links.user.title;
-            dfd.resolve(this.currentUser);
-          }, this))
-          .fail(_.bind(this.checkError, this));
+          .done(_.bind(onDone, this))
+          .fail(_.bind(onError, this));
 
         return dfd.promise();
       }
-    }
-  });
-  RBN.DAL.Users = new Users();
+    };
+  }));
 
-  var Settings = DAL.extend(function() {
+  RBN.DAL.Settings = new (DAL.extend(function(base) {
     return {
       get: function() {
         var settings = window.localStorage['rbn_settings'];
@@ -116,11 +120,10 @@
         window.localStorage['rbn_settings'] = JSON.stringify(settings);
         window.localStorage['rbn_items_expiry'] = -1;
       }
-    }
-  });
-  RBN.DAL.Settings = new Settings();
+    };
+  }));
 
-  var RBs = DAL.extend(function() {
+  RBN.DAL.RB = new (DAL.extend(function(base) {
     return {
       get: function(refresh) {
         var dfd = $.Deferred();
@@ -157,23 +160,25 @@
         }
       },
       getFromAPI: function() {
-        var dfd = $.Deferred();
+        var dfd = $.Deferred(),
+          onUserDone,
+          onUserError;
 
-        RBN.DAL.Users.getCurrentUser().done(_.bind(function(user) {
-
+        onUserDone = function(user) {
           var params = {
             'to-users': user,
             'status': RBN.Constants.Status.ALL,
-            'last-updated-from': utils.getLastUpdatedFromISO8601()
-          };
+            'last-updated-from': this.getLastUpdatedFromISO8601()
+          },
 
-          var flags = RBN.Settings.get().displayOptions,
-            options = RBN.Constants.DisplayOptions,
-            url = String.format('{0}/api/review-requests/', RBN.Settings.get().url)
-            dfds = [],
-            items = [];
+          flags = RBN.Settings.get().displayOptions,
+          options = RBN.Constants.DisplayOptions,
+          url = String.format('{0}/api/review-requests/', RBN.Settings.get().url),
+          dfds = [],
+          items = [],
+          onRbsDone,
 
-          function add(result, hasShipIt) {
+          add = function(result, hasShipIt) {
             var arr = [];
 
             _.each(result.review_requests, function(item) {
@@ -196,7 +201,7 @@
             });
 
             items = items.concat(arr);
-          }
+          };
 
           // We make wo calls to the API, one requesting RBs with no ship-it, and the other to request RBs with ship-it.
           // This is because if we make a single call asking for both (by ommitting the "ship-it" from the query string),
@@ -229,20 +234,29 @@
             );
           }
 
-          $.when.apply(null, dfds).done(_.bind(function() {
-
+          onRbsDone = function() {
             items.sort(function(a, b) {
               return a.last_updated > b.last_updated ? -1 : 1;
             });
 
             window.localStorage['rbn_items'] = JSON.stringify(items);
-
             this.updateExpiry();
-
             dfd.resolve(items);
-          }, this));
+          };
 
-        }, this));
+          $.when.apply(null, dfds)
+            .done(_.bind(onRbsDone, this))
+            .fail(dfd.reject);
+        };
+
+        onUserError = function(error){
+          this.checkError(error);
+          dfd.reject(error);
+        };
+
+        RBN.DAL.Users.getCurrentUser()
+          .done(_.bind(onUserDone, this))
+          .fail(_.bind(onUserError, this));
 
         return dfd.promise();
       },
@@ -257,9 +271,22 @@
       areItemsExpired: function() {
         var expiry = expiry = window.localStorage['rbn_items_expiry'];
         return expiry < (new Date()).getTime();
-      }
-    }
-  });
-  RBN.DAL.RBs = new RBs();
+      },
+      getLastUpdatedFromISO8601: function() {
+          var FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
-})();
+          switch (RBN.Settings.get().lastUpdatedFrom) {
+            case RBN.Constants.LastUpdated.TODAY:
+              return moment().startOf('day').format(FORMAT);
+            case RBN.Constants.LastUpdated.YESTERDAY:
+              return moment().subtract('days', 1).startOf('day').format(FORMAT);
+            case RBN.Constants.LastUpdated.LAST_WEEK:
+              return moment().subtract('days', 7).startOf('day').format(FORMAT);
+            case RBN.Constants.LastUpdated.LAST_TWO_WEEKS:
+              return moment().subtract('days', 14).startOf('day').format(FORMAT);
+          }
+      }
+    };
+  }));
+
+})(jQuery, _, window);

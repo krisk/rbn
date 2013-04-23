@@ -3,9 +3,11 @@
  * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
-$(function() {
+(function($, _, window) {
 
-  RBN.App = (function() {
+  $(function() {
+
+    RBN.App = (function() {
       return new (Fiber.extend(function() {
         return {
           init: function() {
@@ -15,6 +17,8 @@ $(function() {
 
             this.$settingsLink =  $('#settings-link');
             this.$noSettingsMessage = $('#no-settings-message');
+            this.$unauthorizedMessage = $('#unauthorized-message');
+            this.$loginLink = $('#login-link');
 
             if (!url) {
               this.header.enable(false);
@@ -28,9 +32,10 @@ $(function() {
             }
 
             this.bindEvents();
-          },
-          showNoSettingsMessage: function() {
-            this.$noSettingsMessage.show();
+
+            if (this.list) {
+              this.list.load();
+            }
           },
           bindEvents: function() {
             this.header.on('search', _.bind(this.onSearch, this));
@@ -38,14 +43,24 @@ $(function() {
             this.header.on('settings', this.openSettings);
 
             this.$settingsLink.on('click', this.openSettings);
+            this.$loginLink.on('click', this.openLogin);
 
             if (this.list) {
               this.list.on('selected', _.bind(this.onItemSelected, this));
+              this.list.on('unauthorized', _.bind(this.onUnauthorized, this));
             }
+          },
+          showNoSettingsMessage: function() {
+            this.$noSettingsMessage.show();
           },
           openSettings: function() {
             chrome.tabs.create({
               url: chrome.extension.getURL('options.html')
+            });
+          },
+          openLogin: function() {
+            chrome.tabs.create({
+              url: String.format('{0}/{1}', RBN.Settings.get().url, 'account/login/')
             });
           },
           // Header events
@@ -56,9 +71,14 @@ $(function() {
             this.list.loadData(true)
               .done(_.bind(function() {
                 this.header.afterRefresh();
+                this.header.enable(true);
               }, this));
           },
           // RB List events
+          onUnauthorized: function() {
+            this.$unauthorizedMessage.show();
+            this.header.enable(false);
+          },
           onItemSelected: function(event, args) {
             chrome.tabs.create({
               url: String.format('{0}/r/{1}', RBN.Settings.get().url, args.id)
@@ -66,6 +86,7 @@ $(function() {
           }
         }
       }));
-  })();
+    })();
 
-});
+  });
+})(jQuery, _, window);
