@@ -29,9 +29,10 @@
       "js/lib/string-format.js",
       "js/setup.js",
       "js/constants.js",
-      "js/dal.js",
       "js/lib/fiber.js",
       "js/utils/mixins.js",
+      "js/dal.js",
+      "js/lib/fiber.js",
       "js/settings.js",
       "js/notifier.js"
     ],

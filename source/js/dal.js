@@ -22,188 +22,244 @@
     }
   };
 
-  RBN.DAL.getCurrentUser = (function() {
-    var user;
-
-    return function() {
-      var dfd = $.Deferred(),
-        url;
-
-      if (user) {
-        dfd.resolve(user);
-      }
-
-      url = String.format('{0}/api/session', RBN.Settings.get().url);
-
-      $.getJSON(url).done(function(result) {
-        user = result.session.links.user.title;
-        dfd.resolve(user);
-      });
-
-      return dfd.promise();
-    }
-  })();
-
-  RBN.DAL.Users = (function() {
-
-    var users = {},
-      result = window.localStorage['rbn_users'];
-      users = result ? JSON.parse(result) : {};
-
+  var DAL = Fiber.extend(function() {
     return {
+      validateResponse: function(data, text, xhr) {
+        if (data.session && !data.session.authenticated) {
+          var deferred = $.Deferred();
+          deferred.rejectWith(this, [{ status: 401 }]);
+          return deferred;
+        }
+        return data;
+      },
+      checkError: function(error) {
+        if (error && error.status === 401) {
+          this.trigger('unathorized');
+        }
+      }
+    };
+  });
+  Fiber.mixin(DAL, Mixins.Event);
+
+  var Users = DAL.extend(function() {
+    return {
+      init: function() {
+        this.result = window.localStorage['rbn_users'];
+        this.users = this.result ? JSON.parse(this.result) : {};
+        this.currentUser = null;
+      },
       saveAll: function() {
-        window.localStorage['rbn_users'] = JSON.stringify(users);
+        window.localStorage['rbn_users'] = JSON.stringify(this.users);
       },
       getCachedInfoOfUser: function(user) {
-         return users[user];
+         return this.users[user];
       },
       getInfoOfUser: function(user) {
         var dfd = $.Deferred(),
           url,
-          data = users[user];
+          data = this.getCachedInfoOfUser(user);
 
         if (data) {
           dfd.resolve(data);
         } else {
           var url = String.format('{0}/api/users/{1}', RBN.Settings.get().url, user);
 
-          $.getJSON(url).done(function(result) {
-            var data = {
-              avatarUrl: result.user.avatar_url,
-              email: result.user.email,
-              fullname: result.user.fullname
-            };
+          $.getJSON(url)
+            .pipe(this.validateResponse)
+            .done(function(result) {
+              var data = {
+                avatarUrl: result.user.avatar_url,
+                email: result.user.email,
+                fullname: result.user.fullname
+              };
 
-            dfd.resolve(data);
+              dfd.resolve(data);
 
-            users[user] = data;
+              this.users[user] = data;
+            })
+            .fail(_.bind(this.checkError, this));
+        }
+
+        return dfd.promise();
+      },
+      getCurrentUser: function() {
+        var dfd = $.Deferred(),
+          url;
+
+        if (this.currentUser) {
+          dfd.resolve(this.currentUser);
+        }
+
+        url = String.format('{0}/api/session', RBN.Settings.get().url);
+
+        $.getJSON(url)
+          .pipe(this.validateResponse)
+          .done(_.bind(function(result) {
+            this.currentUser = result.session.links.user.title;
+            dfd.resolve(this.currentUser);
+          }, this))
+          .fail(_.bind(this.checkError, this));
+
+        return dfd.promise();
+      }
+    }
+  });
+  RBN.DAL.Users = new Users();
+
+  var Settings = DAL.extend(function() {
+    return {
+      get: function() {
+        var settings = window.localStorage['rbn_settings'];
+        return settings && JSON.parse(settings);
+      },
+      save: function(settings) {
+        window.localStorage['rbn_settings'] = JSON.stringify(settings);
+        window.localStorage['rbn_items_expiry'] = -1;
+      }
+    }
+  });
+  RBN.DAL.Settings = new Settings();
+
+  var RBs = DAL.extend(function() {
+    return {
+      get: function(refresh) {
+        var dfd = $.Deferred();
+
+        if (refresh) {
+          this.getFromAPI().done(function(items) {
+            dfd.resolve(items)
+          });
+        } else {
+          this.getFromCache().done(function(items) {
+            dfd.resolve(items)
           });
         }
 
         return dfd.promise();
-      }
-    };
+      },
+      getFromCache: function() {
+        var expiry,
+          items = window.localStorage['rbn_items'];
 
-  })();
-
-  RBN.DAL.getSettings = function() {
-    var settings = window.localStorage['rbn_settings'];
-    return settings && JSON.parse(settings);
-  };
-
-  RBN.DAL.saveSettings = function(settings) {
-    window.localStorage['rbn_settings'] = JSON.stringify(settings);
-    window.localStorage['rbn_items_expiry'] = -1;
-  };
-
-  RBN.DAL.getAllRBs = function(refresh) {
-    var dfd = $.Deferred();
-
-    function loadFromCache() {
-      var expiry,
-        items = window.localStorage['rbn_items'];
-      if (items) {
-        expiry = window.localStorage['rbn_items_expiry'];
-        if (expiry < (new Date()).getTime()) {
-          items = null;
-          clearStorage();
-          loadFromAPI();
+        if (items) {
+          if (this.areItemsExpired()) {
+            items = null;
+            this.clearStorage();
+            return this.getFromAPI();
+          } else {
+            var dfd = $.Deferred();
+            dfd.resolve(JSON.parse(items));
+            return dfd.promise();
+          }
         } else {
-          items = JSON.parse(items);
-          dfd.resolve(items)
+          this.clearStorage();
+          return this.getFromAPI();
         }
-      } else {
-        clearStorage();
-        loadFromAPI();
+      },
+      getFromAPI: function() {
+        var dfd = $.Deferred();
+
+        RBN.DAL.Users.getCurrentUser().done(_.bind(function(user) {
+
+          var params = {
+            'to-users': user,
+            'status': RBN.Constants.Status.ALL,
+            'last-updated-from': utils.getLastUpdatedFromISO8601()
+          };
+
+          var flags = RBN.Settings.get().displayOptions,
+            options = RBN.Constants.DisplayOptions,
+            url = String.format('{0}/api/review-requests/', RBN.Settings.get().url)
+            dfds = [],
+            items = [];
+
+          function add(result, hasShipIt) {
+            var arr = [];
+
+            _.each(result.review_requests, function(item) {
+              if (_.contains([RBN.Constants.Status.PENDING, RBN.Constants.Status.SUBMITTED], item.status)) {
+
+                var user = RBN.DAL.Users.getCachedInfoOfUser(item.links.submitter.title);
+
+                arr.push({
+                  id: item.id,
+                  summary: item.summary,
+                  description: item.description,
+                  last_updated: new Date(item.last_updated),
+                  status: item.status,
+                  time_added: new Date(item.time_added),
+                  submitter: item.links.submitter.title,
+                  hasShipIt: hasShipIt,
+                  submitterImagelUrl: user ? user.avatarUrl : null
+                });
+              }
+            });
+
+            items = items.concat(arr);
+          }
+
+          // We make wo calls to the API, one requesting RBs with no ship-it, and the other to request RBs with ship-it.
+          // This is because if we make a single call asking for both (by ommitting the "ship-it" from the query string),
+          // the items returned do not have a key to describe whether it has a ship-it or not. Therefore, to solve this,
+          // we make two calls, thus being able to distinquish the items returned.
+
+          if (flags & options.NEED_SHIP_IT) {
+            dfds.push(
+              $.get(url, _.extend({}, params, {
+                'ship-it': '0'
+              }))
+              .pipe(this.validateResponse)
+              .done(function(result) {
+                add(result, false);
+              })
+              .fail(_.bind(this.checkError, this))
+            );
+          }
+
+          if (flags & options.HAVE_SHIP_IT) {
+            dfds.push(
+              $.get(url, _.extend({}, params, {
+                'ship-it': '0'
+              }))
+              .pipe(this.validateResponse)
+              .done(function(result) {
+                add(result, true);
+              })
+              .fail(_.bind(this.checkError, this))
+            );
+          }
+
+          $.when.apply(null, dfds).done(_.bind(function() {
+
+            items.sort(function(a, b) {
+              return a.last_updated > b.last_updated ? -1 : 1;
+            });
+
+            window.localStorage['rbn_items'] = JSON.stringify(items);
+
+            this.updateExpiry();
+
+            dfd.resolve(items);
+          }, this));
+
+        }, this));
+
+        return dfd.promise();
+      },
+      clearStorage: function() {
+        window.localStorage.removeItem('rbn_items');
+        window.localStorage.removeItem('rbn_items_expiry');
+      },
+      // Helpers
+      updateExpiry: function() {
+        window.localStorage['rbn_items_expiry'] =  (new Date()).getTime() + RBN.Settings.get().pollFrequency;
+      },
+      areItemsExpired: function() {
+        var expiry = expiry = window.localStorage['rbn_items_expiry'];
+        return expiry < (new Date()).getTime();
       }
     }
+  });
+  RBN.DAL.RBs = new RBs();
 
-    function loadFromAPI() {
-      RBN.DAL.getCurrentUser().done(function(user) {
-
-        var params = {
-          'to-users': user,
-          'status': RBN.Constants.Status.ALL,
-          'last-updated-from': utils.getLastUpdatedFromISO8601()
-        };
-
-        var flags = RBN.Settings.get().displayOptions,
-          options = RBN.Constants.DisplayOptions,
-          url = String.format('{0}/api/review-requests/', RBN.Settings.get().url)
-          dfds = [],
-          items = [];
-
-        function add(result, hasShipIt) {
-          var arr = [];
-
-          _.each(result.review_requests, function(item) {
-            if (_.contains([RBN.Constants.Status.PENDING, RBN.Constants.Status.SUBMITTED], item.status)) {
-
-              var user = RBN.DAL.Users.getCachedInfoOfUser(item.links.submitter.title);
-
-              arr.push({
-                id: item.id,
-                summary: item.summary,
-                description: item.description,
-                last_updated: new Date(item.last_updated),
-                status: item.status,
-                time_added: new Date(item.time_added),
-                submitter: item.links.submitter.title,
-                hasShipIt: hasShipIt,
-                submitterImagelUrl: user ? user.avatarUrl : null
-              });
-            }
-          });
-
-          items = items.concat(arr);
-        }
-
-        // We make wo calls to the API, one requesting RBs with no ship-it, and the other to request RBs with ship-it.
-        // This is because if we make a single call asking for both (by ommitting the "ship-it" from the query string),
-        // the items returned do not have a key to describe whether it has a ship-it or not. Therefore, to solve this,
-        // we make two calls, thus being able to distinquish the items returned.
-
-        if (flags & options.NEED_SHIP_IT) {
-          dfds.push($.get(url, _.extend({}, params, {
-              'ship-it': '0'
-            })).done(function(result) {
-              add(result, false);
-            }));
-        }
-
-        if (flags & options.HAVE_SHIP_IT) {
-          dfds.push($.get(url, _.extend({}, params, {
-              'ship-it': '1'
-            })).done(function(result) {
-              add(result, true);
-            }));
-        }
-
-        $.when.apply(null, dfds).done(function() {
-          items.sort(function(a, b) {
-            return a.last_updated > b.last_updated ? -1 : 1;
-          });
-
-          window.localStorage['rbn_items'] = JSON.stringify(items);
-          window.localStorage['rbn_items_expiry'] =  (new Date()).getTime() + RBN.Settings.get().pollFrequency;
-
-          dfd.resolve(items);
-        });
-
-      });
-    }
-
-    function clearStorage() {
-      window.localStorage.removeItem('rbn_items');
-      window.localStorage.removeItem('rbn_items_expiry');
-    }
-
-    if (refresh) {
-      loadFromAPI();
-    } else {
-      loadFromCache();
-    }
-
-    return dfd.promise();
-  }
 })();

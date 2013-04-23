@@ -21,7 +21,7 @@
       settings: null,
       defaults: defaultSettings,
       init: function() {
-        this.settings = _.defaults(RBN.DAL.getSettings() || {}, defaultSettings);
+        this.settings = _.defaults(RBN.DAL.Settings.get() || {}, defaultSettings);
 
         var settings = this.settings;
 

@@ -72,8 +72,7 @@
     },
     icons: [
       './source/images/icon.png',
-      './source/images/thumb-up-icon.png',
-      './source/images/exclamation-icon.png',
+      './source/images/green_checkmark.png',
       './source/images/ghost_person.png',
       './source/images/Settings-icon.png'
     ],

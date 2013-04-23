@@ -99,7 +99,7 @@ $(function() {
         }
       },
       loadData: function(refresh) {
-        return RBN.DAL.getAllRBs(refresh).done(_.bind(function(items) {
+        return RBN.DAL.RBs.get(refresh).done(_.bind(function(items) {
           this.update(items);
         }, this));
       },
