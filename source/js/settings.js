@@ -49,7 +49,7 @@
         return this.settings;
       },
       save: function() {
-        RBN.DAL.saveSettings(this.get());
+        RBN.DAL.Settings.save(this.get());
       }
     }
   });
