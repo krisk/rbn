@@ -174,13 +174,6 @@
 
             imagesDfds.push(dfd);
 
-<<<<<<< HEAD
-            if (submitter === 'cmiller') {
-              debugger;
-            }
-
-=======
->>>>>>> 0fbad1f19a1884be115b34909a2abc97a143e443
             RBN.DAL.Users.getInfoOfUser(submitter)
               .done(function(info) {
                 $img

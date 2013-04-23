@@ -55,18 +55,10 @@
           url = String.format('{0}/api/users/{1}', RBN.Settings.get().url, user);
 
           onDone = function(result) {
-<<<<<<< HEAD
-            console.log(result);
-
             var data = {
               email: result.user.email,
               fullname: result.user.fullname,
               avatarUrl: result.user.avatar_url
-=======
-            var data = {
-              email: result.user.email,
-              fullname: result.user.fullname
->>>>>>> 0fbad1f19a1884be115b34909a2abc97a143e443
             };
 
             dfd.resolve(data);
