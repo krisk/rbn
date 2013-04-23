@@ -31,7 +31,8 @@ header .search input {
   top: 11px;
 }
 
-#no-settings-message {
+#no-settings-message,
+#unauthorized-message {
   display: none;
   vertical-align: middle;
   text-align: center;

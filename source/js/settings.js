@@ -3,7 +3,7 @@
  * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
-(function () {
+(function(_, window) {
 
   var Settings = Fiber.extend(function() {
 
@@ -58,4 +58,4 @@
 
   RBN.Settings = new Settings();
 
-})();
+})(_, window);

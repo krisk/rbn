@@ -3,9 +3,10 @@
  * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
-$(function() {
+(function($, _, window) {
+  $(function() {
 
-  RBN.UI.Options = (function() {
+    RBN.UI.Options = (function() {
       return new (Fiber.extend(function() {
         return {
           init: function() {
@@ -90,6 +91,7 @@ $(function() {
           }
         }
       }));
-  })();
+    })();
 
-});
+  });
+})(jQuery, _, window);
