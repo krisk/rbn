@@ -39,8 +39,8 @@
                 if (newIds.length > 0) {
                   var firstUpdate = itemMap[newIds[0]];
                   if (RBN.Settings.get().showNotifications) {
-                    var icon = firstUpdate.submitterImagelUrl,
-                      title = String.format('{0} - {1}', firstUpdate.submitter, firstUpdate.summary),
+                    var icon = firstUpdate.submitter.avatarUrl,
+                      title = String.format('{0} - {1}', firstUpdate.submitter.alias, firstUpdate.summary),
                       description = newIds.length == 1 ? firstUpdate.description : String.format('And {0} more.', newIds.length),
                       notification = webkitNotifications.createNotification(icon, title, description);
 

@@ -182,7 +182,7 @@
             _.each(result.review_requests, function(item) {
               if (_.contains([RBN.Constants.Status.PENDING, RBN.Constants.Status.SUBMITTED], item.status)) {
 
-                var user = RBN.DAL.Users.getCachedInfoOfUser(item.links.submitter.title);
+                var alias = item.links.submitter.title;
 
                 arr.push({
                   id: item.id,
@@ -191,9 +191,8 @@
                   last_updated: new Date(item.last_updated),
                   status: item.status,
                   time_added: new Date(item.time_added),
-                  submitter: item.links.submitter.title,
                   hasShipIt: hasShipIt,
-                  submitterImagelUrl: user ? user.avatarUrl : null
+                  submitter: _.extend({ alias: alias }, RBN.DAL.Users.getCachedInfoOfUser(alias) || {})
                 });
               }
             });

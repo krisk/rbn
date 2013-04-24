@@ -3,7 +3,7 @@
 
   "name": "RB Notifier",
   "description": "View notifications of review board requests assigned to you.",
-  "version": "1.5",
+  "version": "1.7",
 
   "permissions": [
     "https://rb.corp.linkedin.com/api/",

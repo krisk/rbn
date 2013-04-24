@@ -68,15 +68,15 @@
 </section>
 
 <script id="list-item-template" type="text/html">
-  <li data-item-id="<%= id %>" data-item-submitter="<%= submitter %>">
+  <li data-item-id="<%= id %>" data-item-submitter="<%= submitter.alias %>"  <% if (!submitter.avatarUrl) { %>class="partial"<% } %>>
     <div class="body">
-      <% if (submitterImagelUrl) { %>
-        <img class="profile-img" src="<%= submitterImagelUrl %>"></img>
+      <% if (submitter.avatarUrl) { %>
+        <img class="profile-img" src="<%= submitter.avatarUrl %>"></img>
       <% } else { %>
-        <img class="profile-img default" src="images/ghost_person.png"></img>
+        <img class="profile-img" src="images/ghost_person.png"></img>
       <% } %>
       <div class="content">
-        <span class="submitter"><%= submitter %></span>
+        <span <% if (submitter.fullname) { %>title="<%=  submitter.fullname %>"<% } %> class="submitter"><%= submitter.alias %></span>
         <% if (hasShipIt) { %>
           <img class="ship-it-img" src="images/green_checkmark.png" title="Has a 'Ship It!'"/>
         <% } %>

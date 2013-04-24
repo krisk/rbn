@@ -154,7 +154,7 @@
           var data = this.itemAtIndex(sectionIndex, itemIndex);
           return this.options.template(data);
         },
-        computeImages: function() {
+        insertMetaData: function() {
           var self = this;
           var $target;
 
@@ -164,28 +164,36 @@
             $target = this.$target;
           }
 
-          var imagesDfds = [];
+          var dfds = [];
 
-          // Fetch the images that are have not been retrieved/cached
-          $target.find('.profile-img.default').each(function() {
-            var $img = $(this),
-              submitter = $img.closest('li').data('item-submitter'),
+          // Fetch the user meta data that have not been retrieved/cached
+          $target.find('li.partial').each(function() {
+
+            var $li = $(this);
+              $submitter = $li.find('.submitter'),
+              $img = $li.find('.profile-img'),
+              alias = $li.data('item-submitter'),
               dfd = $.Deferred();
 
-            imagesDfds.push(dfd);
+            dfds.push(dfd);
 
-            RBN.DAL.Users.getInfoOfUser(submitter)
-              .done(function(info) {
-                $img
-                  .attr('src', info.avatarUrl)
-                  .removeClass('default');
+            (function($img, $submitter) {
+              RBN.DAL.Users.getInfoOfUser(alias)
+                .done(function(info) {
+                  $img
+                    .attr('src', info.avatarUrl)
+                    .removeClass('default');
 
-              })
-              .always(dfd.resolve);
+                  $submitter
+                    .attr('title', info.fullname);
+                })
+                .always(dfd.resolve);
+            })($img, $submitter);
+
           });
 
-          // When all images have been retrieved, save them all
-          $.when.apply(null, imagesDfds).done(function() {
+          // When all users' meta data has been retrieved, save it
+          $.when.apply(null, dfds).done(function() {
             RBN.DAL.Users.saveAll();
           });
         },
@@ -198,7 +206,7 @@
             this.$target.append(output);
           }
 
-         this.computeImages();
+         this.insertMetaData();
         }
       }
     });
