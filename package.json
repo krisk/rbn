@@ -1,5 +1,6 @@
 {
   "name": "RBN",
+  "version": "1.0.0",
   "description": "Review Board Notifier",
   "author": "Kiro Risk <kirollos@gmail.com>",
   "dependencies": {
