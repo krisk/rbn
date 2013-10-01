@@ -8,14 +8,14 @@
   $(function() {
 
     RBN.App = (function() {
-      return new (Fiber.extend(function() {
+      return new(Fiber.extend(function() {
         return {
           init: function() {
             var url = RBN.Settings.get().url;
 
             this.header = new RBN.UI.Header($('header'));
 
-            this.$settingsLink =  $('#settings-link');
+            this.$settingsLink = $('#settings-link');
             this.$noSettingsMessage = $('#no-settings-message');
             this.$unauthorizedMessage = $('#unauthorized-message');
             this.$loginLink = $('#login-link');

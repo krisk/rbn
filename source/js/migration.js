@@ -3,7 +3,7 @@
  * Copyright 2013 Kirollos Risk <kirollos@gmail.com>
  * Released under the MIT license
  */
- (function() {
+(function() {
   var version = chrome.app.getDetails().version;
   var installedVersion = window.localStorage['rbn_version'] || version;
 

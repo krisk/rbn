@@ -7,7 +7,7 @@
 
   $(function() {
 
-    RBN.UI.RBList = RBN.UI.List.extend(function (base) {
+    RBN.UI.RBList = RBN.UI.List.extend(function(base) {
 
       var defaultOptions = {
         template: null,
@@ -34,7 +34,9 @@
 
           this.bindEvents();
 
-          chrome.browserAction.setBadgeText({text: ''});
+          chrome.browserAction.setBadgeText({
+            text: ''
+          });
         },
         bindEvents: function() {
           var bound = _.bind(this.onItemClick, this);
@@ -47,7 +49,9 @@
           var $target = $(event.target).closest('li');
           var attrId = $target.data('item-id');
 
-          this.trigger('selected', { id: attrId });
+          this.trigger('selected', {
+            id: attrId
+          });
         },
         onUnauthorizedError: function() {
           this.trigger('unauthorized');
@@ -92,21 +96,21 @@
           this.$target.hide();
         },
 
-        numberOfSections: function () {
+        numberOfSections: function() {
           if (this.isSearchVisible()) {
             return 1;
           } else {
             return base.numberOfSections.call(this);
           }
         },
-        numberOfRowsInSection: function (sectionIndex) {
+        numberOfRowsInSection: function(sectionIndex) {
           if (this.isSearchVisible()) {
             return this.searchItems.length;
           } else {
             return base.numberOfRowsInSection.call(this, sectionIndex);
           }
         },
-        itemAtIndex: function (sectionIndex, itemIndex) {
+        itemAtIndex: function(sectionIndex, itemIndex) {
           if (this.isSearchVisible()) {
             return this.searchItems[itemIndex];
           } else {
@@ -150,7 +154,7 @@
           clearTimeout(this.pollTimer);
           this.pollTimer = null;
         },
-        cellForRowAtIndex: function (sectionIndex, itemIndex) {
+        cellForRowAtIndex: function(sectionIndex, itemIndex) {
           var data = this.itemAtIndex(sectionIndex, itemIndex);
           return this.options.template(data);
         },
@@ -170,10 +174,10 @@
           $target.find('li.partial').each(function() {
 
             var $li = $(this);
-              $submitter = $li.find('.submitter'),
-              $img = $li.find('.profile-img'),
-              alias = $li.data('item-submitter'),
-              dfd = $.Deferred();
+            $submitter = $li.find('.submitter'),
+            $img = $li.find('.profile-img'),
+            alias = $li.data('item-submitter'),
+            dfd = $.Deferred();
 
             dfds.push(dfd);
 
@@ -206,7 +210,7 @@
             this.$target.append(output);
           }
 
-         this.insertMetaData();
+          this.insertMetaData();
         }
       }
     });

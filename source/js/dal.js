@@ -14,7 +14,9 @@
       validateResponse: function(data, text, xhr) {
         if (data.session && !data.session.authenticated) {
           var deferred = $.Deferred();
-          deferred.rejectWith(this, [{ status: STATUS_CODES.UAUTHORIZED }]);
+          deferred.rejectWith(this, [{
+            status: STATUS_CODES.UAUTHORIZED
+          }]);
           return deferred;
         }
         return data;
@@ -29,7 +31,7 @@
 
   Fiber.mixin(DAL, Mixins.Event);
 
-  RBN.DAL.Users = new (DAL.extend(function(base) {
+  RBN.DAL.Users = new(DAL.extend(function(base) {
     return {
       init: function() {
         this.result = window.localStorage['rbn_users'];
@@ -40,7 +42,7 @@
         window.localStorage['rbn_users'] = JSON.stringify(this.users);
       },
       getCachedInfoOfUser: function(user) {
-         return this.users[user];
+        return this.users[user];
       },
       getInfoOfUser: function(user) {
         var dfd = $.Deferred(),
@@ -108,7 +110,7 @@
     };
   }));
 
-  RBN.DAL.Settings = new (DAL.extend(function(base) {
+  RBN.DAL.Settings = new(DAL.extend(function(base) {
     return {
       get: function() {
         var settings = window.localStorage['rbn_settings'];
@@ -121,7 +123,7 @@
     };
   }));
 
-  RBN.DAL.RB = new (DAL.extend(function(base) {
+  RBN.DAL.RB = new(DAL.extend(function(base) {
     return {
       get: function(refresh) {
         var dfd = $.Deferred();
@@ -164,41 +166,43 @@
 
         onUserDone = function(user) {
           var params = {
-            'to-users': user,
+            'to-users-directly': user,
             'status': RBN.Constants.Status.ALL,
             'last-updated-from': this.getLastUpdatedFromISO8601()
           },
 
-          flags = RBN.Settings.get().displayOptions,
-          options = RBN.Constants.DisplayOptions,
-          url = String.format('{0}/api/review-requests/', RBN.Settings.get().url),
-          dfds = [],
-          items = [],
-          onRbsDone,
+            flags = RBN.Settings.get().displayOptions,
+            options = RBN.Constants.DisplayOptions,
+            url = String.format('{0}/api/review-requests/', RBN.Settings.get().url),
+            dfds = [],
+            items = [],
+            onRbsDone,
 
-          add = function(result, hasShipIt) {
-            var arr = [];
+            add = function(result, hasShipIt) {
+              var arr = [];
 
-            _.each(result.review_requests, function(item) {
-              if (_.contains([RBN.Constants.Status.PENDING, RBN.Constants.Status.SUBMITTED], item.status)) {
+              _.each(result.review_requests, function(item) {
+                if (_.contains([RBN.Constants.Status.PENDING, RBN.Constants.Status.SUBMITTED], item.status)) {
 
-                var alias = item.links.submitter.title;
+                  var alias = item.links.submitter.title;
 
-                arr.push({
-                  id: item.id,
-                  summary: item.summary,
-                  description: item.description,
-                  last_updated: new Date(item.last_updated),
-                  status: item.status,
-                  time_added: new Date(item.time_added),
-                  hasShipIt: hasShipIt,
-                  submitter: _.extend({ alias: alias }, RBN.DAL.Users.getCachedInfoOfUser(alias) || {})
-                });
-              }
-            });
+                  arr.push({
+                    id: item.id,
+                    summary: item.summary,
+                    description: item.description,
+                    last_updated: new Date(item.last_updated),
+                    status: item.status,
+                    time_added: new Date(item.time_added),
+                    hasShipIt: hasShipIt,
+                    submitter: _.extend({
+                      alias: alias
+                    }, RBN.DAL.Users.getCachedInfoOfUser(alias) || {})
+                  });
+                }
+              });
 
-            items = items.concat(arr);
-          };
+              items = items.concat(arr);
+            };
 
           // We make wo calls to the API, one requesting RBs with no ship-it, and the other to request RBs with ship-it.
           // This is because if we make a single call asking for both (by ommitting the "ship-it" from the query string),
@@ -246,7 +250,7 @@
             .fail(dfd.reject);
         };
 
-        onUserError = function(error){
+        onUserError = function(error) {
           this.checkError(error);
           dfd.reject(error);
         };
@@ -263,25 +267,25 @@
       },
       // Helpers
       updateExpiry: function() {
-        window.localStorage['rbn_items_expiry'] =  (new Date()).getTime() + RBN.Settings.get().pollFrequency;
+        window.localStorage['rbn_items_expiry'] = (new Date()).getTime() + RBN.Settings.get().pollFrequency;
       },
       areItemsExpired: function() {
         var expiry = expiry = window.localStorage['rbn_items_expiry'];
         return expiry < (new Date()).getTime();
       },
       getLastUpdatedFromISO8601: function() {
-          var FORMAT = 'YYYY-MM-DDTHH:mm:ss';
+        var FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
-          switch (RBN.Settings.get().lastUpdatedFrom) {
-            case RBN.Constants.LastUpdated.TODAY:
-              return moment().startOf('day').format(FORMAT);
-            case RBN.Constants.LastUpdated.YESTERDAY:
-              return moment().subtract('days', 1).startOf('day').format(FORMAT);
-            case RBN.Constants.LastUpdated.LAST_WEEK:
-              return moment().subtract('days', 7).startOf('day').format(FORMAT);
-            case RBN.Constants.LastUpdated.LAST_TWO_WEEKS:
-              return moment().subtract('days', 14).startOf('day').format(FORMAT);
-          }
+        switch (RBN.Settings.get().lastUpdatedFrom) {
+          case RBN.Constants.LastUpdated.TODAY:
+            return moment().startOf('day').format(FORMAT);
+          case RBN.Constants.LastUpdated.YESTERDAY:
+            return moment().subtract('days', 1).startOf('day').format(FORMAT);
+          case RBN.Constants.LastUpdated.LAST_WEEK:
+            return moment().subtract('days', 7).startOf('day').format(FORMAT);
+          case RBN.Constants.LastUpdated.LAST_TWO_WEEKS:
+            return moment().subtract('days', 14).startOf('day').format(FORMAT);
+        }
       }
     };
   }));

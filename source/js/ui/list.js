@@ -4,15 +4,15 @@
  * Released under the MIT license
  */
 (function($, _, window) {
-  $(function () {
+  $(function() {
 
-    RBN.UI.List = Fiber.extend(function () {
+    RBN.UI.List = Fiber.extend(function() {
       var defaultOptions = {
         maxItems: 5
       };
 
       return {
-        init: function (options) {
+        init: function(options) {
           this.options = _.defaults(options || {}, defaultOptions);
 
           var lastItemIndex = lastSectionIndex = null;
@@ -74,45 +74,45 @@
         },
 
         // begin HELPER methods
-        itemAtIndex: function (sectionIndex, itemIndex) {
+        itemAtIndex: function(sectionIndex, itemIndex) {
           return this.items[sectionIndex][itemIndex];
         },
-        insertItemAtIndex: function (item, sectionIndex, itemIndex) {
+        insertItemAtIndex: function(item, sectionIndex, itemIndex) {
           return this.itemAtIndex(sectionIndex, itemIndex).push(item);
         },
         // end HELPER methods
 
         // begin CELL methods
-        cellForRowAtIndex: function (sectionIndex, itemIndex) {
+        cellForRowAtIndex: function(sectionIndex, itemIndex) {
           throw 'Subclass must implement method <cellForRowAtIndex>';
         },
         // end CELL methods
 
         // begin HEADER methods
-        numberOfSections: function () {
+        numberOfSections: function() {
           return this.items.count;
         },
-        numberOfRowsInSection: function (sectionIndex) {
+        numberOfRowsInSection: function(sectionIndex) {
           if (sectionIndex < this.items.length) {
             return this.items[sectionIndex].length;
           }
           return 0;
         },
-        titleForHeaderInSection: function (sectionIndex) {
+        titleForHeaderInSection: function(sectionIndex) {
           return this.sectionTitles[sectionIndex];
         },
-        sectionTitles: function () {
+        sectionTitles: function() {
           return this.sectionTitles;
         },
-        viewForHeaderInSection: function (sectionIndex) {
+        viewForHeaderInSection: function(sectionIndex) {
           return null;
         },
         // end HEADER methods
 
-        renderNext: function () {
+        renderNext: function() {
           this.render();
         },
-        render: function () {
+        render: function() {
           var cell, title,
             result = [],
             drawTitle = true,

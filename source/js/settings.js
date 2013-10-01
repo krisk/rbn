@@ -14,7 +14,7 @@
       maxItems: RBN.Constants.Items.MAX,
       showNotifications: true,
       lastUpdatedFrom: RBN.Constants.LastUpdated.YESTERDAY,
-      displayOptions: RBN.Constants.DisplayOptions.NEED_SHIP_IT|RBN.Constants.DisplayOptions.HAVE_SHIP_IT
+      displayOptions: RBN.Constants.DisplayOptions.NEED_SHIP_IT | RBN.Constants.DisplayOptions.HAVE_SHIP_IT
     };
 
     return {
@@ -38,7 +38,10 @@
             },
             set: function(val) {
               prop = val;
-              self.trigger('change', { setting: setting, value: val});
+              self.trigger('change', {
+                setting: setting,
+                value: val
+              });
               self.save();
             }
           });

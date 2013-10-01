@@ -7,7 +7,7 @@
   $(function() {
 
     RBN.UI.Options = (function() {
-      return new (Fiber.extend(function() {
+      return new(Fiber.extend(function() {
         return {
           init: function() {
             this.$rbUrlText = $('#rb-url-text');
@@ -67,7 +67,7 @@
           onpollFrequencyChange: function() {
             var value = parseInt(this.$pollFrequencyText.val());
             if (!_.isNumber(value) || value < RBN.Constants.Poll.MIN || value > RBN.Constants.Poll.MAX) {
-              this.$pollFrequencyText.val(RBN.Settings.get().pollFrequency / RBN.Constants.MINUTE );
+              this.$pollFrequencyText.val(RBN.Settings.get().pollFrequency / RBN.Constants.MINUTE);
               return;
             }
             RBN.Settings.get().pollFrequency = value * RBN.Constants.MINUTE;

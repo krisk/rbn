@@ -24,35 +24,37 @@
           }
 
           RBN.DAL.RB.get(true).done(function(items) {
-              if (stopped) {
-                return;
-              }
+            if (stopped) {
+              return;
+            }
 
-              var itemMap = {},
-                ids = _.map(items, function(item) {
-                  itemMap[item.id] = item;
-                  return item.id;
-                });
+            var itemMap = {},
+              ids = _.map(items, function(item) {
+                itemMap[item.id] = item;
+                return item.id;
+              });
 
-              if (previousIds) {
-                var newIds = _.difference(ids, previousIds);
-                if (newIds.length > 0) {
-                  var firstUpdate = itemMap[newIds[0]];
-                  if (RBN.Settings.get().showNotifications) {
-                    var icon = firstUpdate.submitter.avatarUrl,
-                      title = String.format('{0} - {1}', firstUpdate.submitter.alias, firstUpdate.summary),
-                      description = newIds.length == 1 ? firstUpdate.description : String.format('And {0} more.', newIds.length),
-                      notification = webkitNotifications.createNotification(icon, title, description);
+            if (previousIds) {
+              var newIds = _.difference(ids, previousIds);
+              if (newIds.length > 0) {
+                var firstUpdate = itemMap[newIds[0]];
+                if (RBN.Settings.get().showNotifications) {
+                  var icon = firstUpdate.submitter.avatarUrl,
+                    title = String.format('{0} - {1}', firstUpdate.submitter.alias, firstUpdate.summary),
+                    description = newIds.length == 1 ? firstUpdate.description : String.format('And {0} more.', newIds.length),
+                    notification = webkitNotifications.createNotification(icon, title, description);
 
-                    notification.show();
-                  }
-                  chrome.browserAction.setBadgeText({text: '' + newIds.length});
+                  notification.show();
                 }
+                chrome.browserAction.setBadgeText({
+                  text: '' + newIds.length
+                });
               }
+            }
 
-              previousIds = ids;
+            previousIds = ids;
 
-            })
+          })
             .done(poll);
 
         }, interval);
